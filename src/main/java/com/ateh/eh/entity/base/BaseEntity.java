@@ -32,7 +32,7 @@ public class BaseEntity {
     @ApiModelProperty("创建人")
     private String createStaff;
 
-    @TableField(value = "update_date", fill = FieldFill.INSERT_UPDATE)
+    @TableField(value = "update_date", fill = FieldFill.UPDATE)
     @ApiModelProperty("更新时间")
     private Date updateDate;
 

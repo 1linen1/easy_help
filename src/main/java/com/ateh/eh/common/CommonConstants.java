@@ -2,7 +2,7 @@ package com.ateh.eh.common;
 
 /**
  * <p>
- * 类说明：常量
+ * 类说明：通用常量
  * <p>
  * 类名称: CommonConstants.java
  *

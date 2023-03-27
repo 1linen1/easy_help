@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootTest
 class EasyHelpApplicationTests {
@@ -25,6 +26,14 @@ class EasyHelpApplicationTests {
         user.setLocked("0");
         System.out.println(userMapper.insert(user));
 
+    }
+
+    @Autowired
+    private BCryptPasswordEncoder encoder;
+
+    @Test
+    void createPwd() {
+        System.out.println(encoder.encode("admin"));
     }
 
 }
