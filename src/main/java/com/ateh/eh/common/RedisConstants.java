@@ -15,5 +15,14 @@ package com.ateh.eh.common;
  * @version v1.0.0
  */
 public class RedisConstants {
+
+    /**
+     * 登录存放用户的Key
+     */
     public static final String LOGIN_KEY = "LOGIN_KEY";
+
+    /**
+     * Token有效时间
+     */
+    public static final Long TOKEN_VALID_TIME = 30 * 60 * 1000L;
 }

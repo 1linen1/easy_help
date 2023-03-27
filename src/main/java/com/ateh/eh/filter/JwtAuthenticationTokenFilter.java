@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSON;
 import com.ateh.eh.auth.LoginUser;
 import com.ateh.eh.common.RedisConstants;
 import com.ateh.eh.utils.JwtHelper;
-import com.ateh.eh.utils.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,7 +40,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         try {
             userId = JwtHelper.getUserId(token);
         } catch (Exception e) {
-            ResponseUtil.out(response, "Token不合法", 403);
+            throw new RuntimeException("Token不合法");
         }
 
         // 获取Redis中的用户信息
@@ -49,7 +48,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         LoginUser loginUser = JSON.parseObject(value, LoginUser.class);
 
         if (Objects.isNull(loginUser)) {
-            ResponseUtil.out(response, "登陆已失效！请重新登录！", 403);
+            throw new RuntimeException("登陆已失效！请重新登录！");
         }
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =

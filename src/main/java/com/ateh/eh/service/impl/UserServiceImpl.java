@@ -57,10 +57,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         // 存入Redis中
         redisTemplate.opsForValue().set(RedisConstants.LOGIN_KEY + realUser.getUserId(),
-                JSON.toJSONString(loginUser), 30 * 60 * 1000, TimeUnit.SECONDS);
+                JSON.toJSONString(loginUser), RedisConstants.TOKEN_VALID_TIME, TimeUnit.SECONDS);
 
         // 组装后返回给前端
         map.put("token", token);
+        map.put("user", realUser);
 
         return Result.success(map, "登录成功！");
     }
