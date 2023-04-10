@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
@@ -29,7 +30,10 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 获取Header中的token
         String token = request.getHeader("Authorization");
-        if ("/api/user/login".equals(request.getRequestURI())) {
+
+        String uri = request.getRequestURI();
+
+        if ("/api/user/login".equals(uri) || "/api/user/verificationCode".equals(uri)) {
             // 直接放行，让SpringSecurity的其他过滤器报错误
             filterChain.doFilter(request, response);
             return;

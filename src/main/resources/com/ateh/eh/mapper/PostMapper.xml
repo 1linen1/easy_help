@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ateh.eh.mapper.PostMapper">
+
+    <sql id="Base_Colum_P">
+        p.post_id, p.user_id, p.content, p.images, p.type, p.status, p.loves, p.collects, p.views, p.comments, p.create_date, p.create_staff, p.update_date, p.update_staff
+    </sql>
+
+    <select id="qryPostPage" parameterType="com.ateh.eh.req.posts.PostPageReq" resultType="com.ateh.eh.entity.ext.PostExt">
+        SELECT <include refid="Base_Colum_P"/>, u.username, u.user_id, u.avatar
+        FROM post p
+            LEFT JOIN user u ON p.user_id = u.user_id
+        WHERE p.user_id = u.user_id
+        <choose>
+            <when test="req.sortedType != null and req.sortedType == 'time'">
+                ORDER BY p.create_date DESC
+            </when>
+            <when test="req.sortedType != null and req.sortedType == 'views'">
+                ORDER BY p.views DESC
+            </when>
+            <when test="req.sortedType != null and req.sortedType == 'scores'">
+                ORDER BY p.scores DESC
+            </when>
+        </choose>
+
+    </select>
+
+</mapper>

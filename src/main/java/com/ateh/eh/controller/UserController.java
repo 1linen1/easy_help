@@ -1,11 +1,10 @@
 package com.ateh.eh.controller;
 
+import com.ateh.eh.req.user.VerificationCodeReq;
 import com.ateh.eh.req.user.UserLoginReq;
 import com.ateh.eh.service.IUserService;
 import com.ateh.eh.utils.Result;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * <p>
@@ -49,4 +47,8 @@ public class UserController {
         return userService.logout();
     }
 
+    @PostMapping("/verificationCode")
+    public Result getLoginCode(@RequestBody VerificationCodeReq loginCodeReq) {
+        return userService.getVerificationCode(loginCodeReq);
+    }
 }

@@ -17,12 +17,22 @@ package com.ateh.eh.common;
 public class RedisConstants {
 
     /**
-     * 登录存放用户的Key
+     * 用户TOKEN
      */
     public static final String LOGIN_KEY = "LOGIN_KEY";
 
     /**
-     * Token有效时间
+     * Token有效期（30分钟）
      */
     public static final Long TOKEN_VALID_TIME = 30 * 60 * 1000L;
+
+    /**
+     * 邮箱验证码
+     */
+    public static final String EMAIL_VERIFICATION_CODE = "EMAIL_VERIFICATION_CODE";
+
+    /**
+     * 邮箱验证码有效期（5分钟）
+     */
+    public static final Long EMAIL_CODE_VALID_TIME = 5 * 60L;
 }

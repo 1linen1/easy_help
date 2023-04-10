@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Copyright: Copyright(c) 2022 iwhalecloud
  * <p>
  * 类说明：TODO
  * <p>
@@ -49,6 +48,10 @@ public class LoginUser implements UserDetails {
     @Override
     public String getUsername() {
         return user.getUsername();
+    }
+
+    public Long getUserId() {
+        return user.getUserId();
     }
 
     @Override

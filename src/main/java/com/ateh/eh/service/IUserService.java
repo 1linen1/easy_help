@@ -3,6 +3,7 @@ package com.ateh.eh.service;
 import com.ateh.eh.entity.User;
 import com.ateh.eh.mapper.UserMapper;
 import com.ateh.eh.req.user.UserLoginReq;
+import com.ateh.eh.req.user.VerificationCodeReq;
 import com.ateh.eh.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -39,4 +40,12 @@ public interface IUserService extends IService<User>{
      */
     public Result logout();
 
+    /**
+     * 功能描述: 获取邮箱验证码
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/4/9 23:56
+     */
+    Result getVerificationCode(VerificationCodeReq loginCodeReq);
 }
