@@ -26,8 +26,8 @@ public class PostExt extends Post {
     @ApiModelProperty("用户主键")
     private Long userId;
 
-    @ApiModelProperty("用户名")
-    private String username;
+    @ApiModelProperty("用户别名")
+    private String nickname;
 
     @ApiModelProperty("头像")
     private String avatar;

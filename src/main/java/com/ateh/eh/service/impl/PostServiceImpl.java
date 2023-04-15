@@ -36,7 +36,6 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements IP
     @Override
     public Result addPost(Post post) {
         post.setUserId(UserHolder.getLoginUser().getUserId());
-        post.setStatus(CommonConstants.STATUS_VALID);
         postMapper.insert(post);
         return Result.success("发帖成功!");
     }

@@ -25,4 +25,14 @@ public class CommonConstants {
      * 状态有效值 00A
      */
     public static final String STATUS_VALID = "00A";
+
+    /**
+     * 普通用户
+     */
+    public static final String NORMAL_USER_2 = "2";
+
+    /**
+     * 管理员
+     */
+    public static final String ADMIN_USER_1 = "1";
 }

@@ -39,6 +39,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         log.info("start insert fill ....");
         // 或者
         this.strictInsertFill(metaObject, "createDate", Date::new, Date.class);
+        this.strictInsertFill(metaObject, "status", () -> CommonConstants.STATUS_VALID, String.class);
         this.strictInsertFill(metaObject, "createStaff", this::getUsername, String.class);
     }
 

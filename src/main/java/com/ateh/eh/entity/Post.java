@@ -45,9 +45,6 @@ public class Post extends BaseEntity {
     @ApiModelProperty("帖子标签")
     private String tag;
 
-    @ApiModelProperty("状态（00X失效，00A有效）")
-    private String status;
-
     @ApiModelProperty("点赞数")
     private int loves;
 

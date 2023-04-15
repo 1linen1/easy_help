@@ -34,6 +34,9 @@ public class User extends BaseEntity {
     @ApiModelProperty("密码")
     private String password;
 
+    @ApiModelProperty("用户别名")
+    private String nickname;
+
     @ApiModelProperty("邮箱")
     private String email;
 
@@ -54,9 +57,6 @@ public class User extends BaseEntity {
 
     @ApiModelProperty("动态数")
     private String dynamics;
-
-    @ApiModelProperty("状态")
-    private String status;
 
     @ApiModelProperty("是否被锁")
     private String locked;

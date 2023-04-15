@@ -6,24 +6,27 @@ import lombok.Data;
 
 /**
  * <p>
- * 类说明：用户登录请求
+ * 类说明：TODO
  * <p>
- * 类名称: UserLoginReq.java
+ * 类名称: UserRegisterReq.java
  *
  * @author huang.yijie
- * 时间: 2023/3/19 21:23
+ * 时间: 2023/4/11 22:04
  * <p>
  * Modification History:
  * Date Author Version Description
  * ------------------------------------------------------------
  * @version v1.0.0
  */
+@ApiModel("用户注册请求类")
 @Data
-@ApiModel("用户登录请求")
-public class UserLoginReq {
+public class UserRegisterReq {
 
-    @ApiModelProperty("用户名")
-    private String username;
+    @ApiModelProperty("邮箱")
+    private String email;
+
+    @ApiModelProperty("邮箱验证码")
+    private String code;
 
     @ApiModelProperty("密码")
     private String password;

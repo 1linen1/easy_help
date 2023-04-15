@@ -1,5 +1,7 @@
 package com.ateh.eh.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.ateh.eh.req.user.UserRegisterReq;
 import com.ateh.eh.req.user.VerificationCodeReq;
 import com.ateh.eh.req.user.UserLoginReq;
 import com.ateh.eh.service.IUserService;
@@ -47,8 +49,15 @@ public class UserController {
         return userService.logout();
     }
 
-    @PostMapping("/verificationCode")
-    public Result getLoginCode(@RequestBody VerificationCodeReq loginCodeReq) {
+    @PostMapping("/getVerificationCode")
+    @ApiOperation("获取邮箱验证码")
+    public Result getVerificationCode(@RequestBody VerificationCodeReq loginCodeReq) {
         return userService.getVerificationCode(loginCodeReq);
+    }
+
+    @PostMapping("/register")
+    @ApiOperation("注册")
+    public Result register(@RequestBody UserRegisterReq req) {
+        return userService.register(req);
     }
 }

@@ -24,6 +24,10 @@ import java.util.Date;
 @Data
 public class BaseEntity {
 
+    @TableField(value = "status", fill = FieldFill.INSERT)
+    @ApiModelProperty("状态（00X失效，00A有效）")
+    private String status;
+
     @TableField(value = "create_date", fill = FieldFill.INSERT)
     @ApiModelProperty("创建时间")
     private Date createDate;

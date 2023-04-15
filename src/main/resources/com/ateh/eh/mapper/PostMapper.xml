@@ -9,7 +9,7 @@
     </sql>
 
     <select id="qryPostPage" parameterType="com.ateh.eh.req.posts.PostPageReq" resultType="com.ateh.eh.entity.ext.PostExt">
-        SELECT <include refid="Base_Colum_P"/>, u.username, u.user_id, u.avatar
+        SELECT <include refid="Base_Colum_P"/>, u.user_id, u.avatar, u.nickname
         FROM post p
             LEFT JOIN user u ON p.user_id = u.user_id
         WHERE p.user_id = u.user_id
