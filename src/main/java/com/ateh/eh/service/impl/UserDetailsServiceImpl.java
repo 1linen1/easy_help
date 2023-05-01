@@ -1,7 +1,7 @@
 package com.ateh.eh.service.impl;
 
 import com.ateh.eh.auth.LoginUser;
-import com.ateh.eh.entity.User;
+import com.ateh.eh.entity.ext.UserExt;
 import com.ateh.eh.mapper.UserMapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +14,14 @@ import java.util.Objects;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+
     @Autowired
     private UserMapper userMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 根据用户名查询数据库中的用户信息
-        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<User>().eq(User::getUsername, username);
-        User user = userMapper.selectOne(wrapper);
+        UserExt user = userMapper.qryUserByName(username);
         if (Objects.isNull(user)) {
             throw new RuntimeException("该用户不存在！");
         }

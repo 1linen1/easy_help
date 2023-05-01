@@ -31,10 +31,9 @@ public interface IPostService extends IService<Post> {
     /**
      * 功能描述: 分页查询帖子
      *
-     * @param req 分页请求
-     * @return com.baomidou.mybatisplus.core.metadata.IPage<com.ateh.eh.entity.ext.PostExt>
+     * @return com.ateh.eh.utils.Result<com.baomidou.mybatisplus.core.metadata.IPage < com.ateh.eh.entity.ext.PostExt>>
      * @author huang.yijie
-     * 时间: 2023/4/8 20:24
+     * 时间: 2023/4/23 0:26
      */
-    IPage<PostExt> qryPostPage(PostPageReq req);
+    Result<IPage<PostExt>> qryPostPage(PostPageReq req);
 }

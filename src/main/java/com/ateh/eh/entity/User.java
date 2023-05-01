@@ -1,10 +1,14 @@
 package com.ateh.eh.entity;
 
 import com.ateh.eh.entity.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.Date;
 
 /**
  * <p>
@@ -26,6 +30,7 @@ import lombok.EqualsAndHashCode;
 public class User extends BaseEntity {
 
     @ApiModelProperty("用户主键")
+    @TableId(value = "user_id", type = IdType.AUTO)
     private Long userId;
 
     @ApiModelProperty("用户名")
@@ -46,8 +51,14 @@ public class User extends BaseEntity {
     @ApiModelProperty("角色")
     private String role;
 
-    @ApiModelProperty("积分")
-    private String scores;
+    @ApiModelProperty("总积分")
+    private Long scoresTotal;
+
+    @ApiModelProperty("当前积分")
+    private Long scoresCurrent;
+
+    @ApiModelProperty("称号")
+    private Long title;
 
     @ApiModelProperty("粉丝数")
     private String follows;
@@ -60,5 +71,8 @@ public class User extends BaseEntity {
 
     @ApiModelProperty("是否被锁")
     private String locked;
+
+    @ApiModelProperty("最近一次登录时间")
+    private Date lastLoginDate;
 
 }

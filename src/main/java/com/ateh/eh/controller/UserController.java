@@ -1,6 +1,8 @@
 package com.ateh.eh.controller;
 
-import com.alibaba.fastjson.JSON;
+import com.ateh.eh.req.user.MyRankReq;
+import com.ateh.eh.req.user.RankPageReq;
+import com.ateh.eh.req.user.UpdateNicknameReq;
 import com.ateh.eh.req.user.UserRegisterReq;
 import com.ateh.eh.req.user.VerificationCodeReq;
 import com.ateh.eh.req.user.UserLoginReq;
@@ -59,5 +61,23 @@ public class UserController {
     @ApiOperation("注册")
     public Result register(@RequestBody UserRegisterReq req) {
         return userService.register(req);
+    }
+
+    @PostMapping("/updateNickname")
+    @ApiOperation("更新昵称")
+    public Result updateNickname(@RequestBody UpdateNicknameReq req) {
+        return userService.updateNickname(req);
+    }
+
+    @PostMapping("/getRankPage")
+    @ApiOperation("获取排行榜")
+    public Result getRankPage(@RequestBody RankPageReq req) {
+        return userService.getRankPage(req);
+    }
+
+    @PostMapping("/getMyRank")
+    @ApiOperation("获取当前用户信息")
+    public Result getMyRank(@RequestBody MyRankReq req) {
+        return userService.getMyRank(req);
     }
 }

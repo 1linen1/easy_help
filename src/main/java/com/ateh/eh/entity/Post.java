@@ -2,7 +2,9 @@ package com.ateh.eh.entity;
 
 import com.ateh.eh.entity.base.BaseEntity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -28,6 +30,7 @@ import lombok.EqualsAndHashCode;
 public class Post extends BaseEntity {
 
     @ApiModelProperty("帖子主键")
+    @TableId(value = "post_id", type = IdType.AUTO)
     private Long postId;
 
     @ApiModelProperty("发布帖子的用户主键")

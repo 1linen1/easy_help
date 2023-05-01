@@ -1,5 +1,7 @@
 package com.ateh.eh.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -30,7 +32,8 @@ import java.io.Serializable;
 public class Email {
 
     @ApiModelProperty("主键")
-    private String emailId;
+    @TableId(value = "email_id", type = IdType.AUTO)
+    private Long emailId;
 
     @ApiModelProperty("邮件接收方")
     private String toEmail;

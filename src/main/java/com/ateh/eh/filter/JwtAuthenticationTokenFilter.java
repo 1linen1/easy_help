@@ -1,10 +1,12 @@
 package com.ateh.eh.filter;
 
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.ateh.eh.auth.LoginUser;
 import com.ateh.eh.common.RedisConstants;
 import com.ateh.eh.utils.JwtHelper;
+import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,14 +19,21 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-@Component
+//@Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
-    @Autowired
+//    @Autowired
     private StringRedisTemplate redisTemplate;
+
+    public JwtAuthenticationTokenFilter(StringRedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -33,7 +42,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
         String uri = request.getRequestURI();
 
-        if ("/api/user/login".equals(uri) || "/api/user/verificationCode".equals(uri)) {
+        if (matchPaths(uri)) {
             // 直接放行，让SpringSecurity的其他过滤器报错误
             filterChain.doFilter(request, response);
             return;
@@ -62,5 +71,22 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean matchPaths(String uri) {
+            List<String> paths = Arrays.asList(
+                    "/favicon.ico",
+                    "/api/file/uploadTest",
+                    "/static/.*",
+                    "/api/user/login",
+                    "/api/user/getVerificationCode",
+                    "/api/user/register"
+            );
+        for (String path : paths) {
+            if (Pattern.matches(path, uri)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

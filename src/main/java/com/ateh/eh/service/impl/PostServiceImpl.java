@@ -41,9 +41,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements IP
     }
 
     @Override
-    public IPage<PostExt> qryPostPage(PostPageReq req) {
+    public Result<IPage<PostExt>> qryPostPage(PostPageReq req) {
         IPage<PostExt> posts = postMapper.qryPostPage(req.toPage(), req);
-        return posts;
+        return Result.success(posts);
     }
 
 }

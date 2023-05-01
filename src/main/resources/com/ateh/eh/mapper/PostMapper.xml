@@ -12,7 +12,7 @@
         SELECT <include refid="Base_Colum_P"/>, u.user_id, u.avatar, u.nickname
         FROM post p
             LEFT JOIN user u ON p.user_id = u.user_id
-        WHERE p.user_id = u.user_id
+        WHERE p.user_id = u.user_id AND p.status = '00A' AND u.status = '00A'
         <choose>
             <when test="req.sortedType != null and req.sortedType == 'time'">
                 ORDER BY p.create_date DESC

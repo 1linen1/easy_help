@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ateh.eh.mapper.UserMapper">
+
+    <sql id="Base_Colum_U">
+        u.user_id, u.username, u.password, u.nickname, u.email, u.avatar, u.role, u.scores_total, u.scores_current, u.title, u.follows, u.concerns, u.dynamics, u.status, u.locked, u.create_date, u.create_staff, u.update_date, u.update_staff
+    </sql>
+
+    <select id="qryUserByName" resultType="com.ateh.eh.entity.ext.UserExt">
+        SELECT <include refid="Base_Colum_U"/>, t.name as titleName
+        FROM user u
+            LEFT JOIN title t ON u.title = t.title_id
+        WHERE u.username = #{username} AND u.status = '00A' AND t.status = '00A'
+    </select>
+
+</mapper>

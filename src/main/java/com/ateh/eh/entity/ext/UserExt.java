@@ -1,6 +1,6 @@
 package com.ateh.eh.entity.ext;
 
-import com.ateh.eh.entity.Post;
+import com.ateh.eh.entity.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,10 +10,10 @@ import lombok.EqualsAndHashCode;
  * <p>
  * 类说明：TODO
  * <p>
- * 类名称: PostExt.java
+ * 类名称: UserExt.java
  *
  * @author huang.yijie
- * 时间: 2023/4/8 20:39
+ * 时间: 2023/4/17 13:56
  * <p>
  * Modification History:
  * Date Author Version Description
@@ -22,16 +22,13 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@ApiModel("帖子拓展类")
-public class PostExt extends Post {
+@ApiModel("用户拓展类")
+public class UserExt extends User {
 
-    @ApiModelProperty("用户主键")
-    private Long userId;
+    @ApiModelProperty("称号")
+    private String titleName;
 
-    @ApiModelProperty("用户别名")
-    private String nickname;
-
-    @ApiModelProperty("头像")
-    private String avatar;
+    @ApiModelProperty("排名")
+    private Long rank;
 
 }

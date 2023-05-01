@@ -1,6 +1,7 @@
 package com.ateh.eh.auth;
 
 import com.ateh.eh.entity.User;
+import com.ateh.eh.entity.ext.UserExt;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +31,7 @@ import java.util.List;
 @NoArgsConstructor
 public class LoginUser implements UserDetails {
 
-    private User user;
+    private UserExt user;
 
     private List<SimpleGrantedAuthority> authorities;
 

@@ -58,6 +58,10 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     private String getUsername() {
         // 从上下文中获取用户信息
         SecurityContext context = SecurityContextHolder.getContext();
+
+        if (context.getAuthentication().getPrincipal() instanceof String) {
+            return "";
+        }
         LoginUser loginUser = (LoginUser) context.getAuthentication().getPrincipal();
         return loginUser.getUsername();
     }

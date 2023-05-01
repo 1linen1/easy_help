@@ -44,7 +44,7 @@ public class PostController {
 
     @PostMapping("/qryPostPage")
     @ApiOperation("分页查询帖子")
-    public IPage<PostExt> qryPostPage(@RequestBody PostPageReq req) {
+    public Result<IPage<PostExt>> qryPostPage(@RequestBody PostPageReq req) {
         return postService.qryPostPage(req);
     }
 

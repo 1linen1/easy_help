@@ -2,6 +2,9 @@ package com.ateh.eh.service;
 
 import com.ateh.eh.entity.User;
 import com.ateh.eh.mapper.UserMapper;
+import com.ateh.eh.req.user.MyRankReq;
+import com.ateh.eh.req.user.RankPageReq;
+import com.ateh.eh.req.user.UpdateNicknameReq;
 import com.ateh.eh.req.user.UserLoginReq;
 import com.ateh.eh.req.user.UserRegisterReq;
 import com.ateh.eh.req.user.VerificationCodeReq;
@@ -58,4 +61,31 @@ public interface IUserService extends IService<User>{
      * 时间: 2023/4/11 22:08
      */
     Result register(UserRegisterReq req);
+
+    /**
+     * 功能描述: 修改用户昵称
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/4/16 22:07
+     */
+    Result updateNickname(UpdateNicknameReq req);
+
+    /**
+     * 功能描述: 分页获取排行榜数据
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/4/18 14:17
+     */
+    Result getRankPage(RankPageReq req);
+
+    /**
+     * 功能描述: 获取当前用户信息
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/4/18 16:18
+     */
+    Result getMyRank(MyRankReq req);
 }

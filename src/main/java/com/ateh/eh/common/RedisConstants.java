@@ -19,7 +19,7 @@ public class RedisConstants {
     /**
      * 用户TOKEN
      */
-    public static final String LOGIN_KEY = "LOGIN_KEY";
+    public static final String LOGIN_KEY = "LOGIN_KEY:";
 
     /**
      * Token有效期（30分钟）
@@ -29,7 +29,7 @@ public class RedisConstants {
     /**
      * 邮箱验证码
      */
-    public static final String EMAIL_VERIFICATION_CODE = "EMAIL_VERIFICATION_CODE";
+    public static final String EMAIL_VERIFICATION_CODE = "EMAIL_VERIFICATION_CODE:";
 
     /**
      * 邮箱验证码有效期（5分钟）
