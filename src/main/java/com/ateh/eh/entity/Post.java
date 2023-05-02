@@ -49,14 +49,14 @@ public class Post extends BaseEntity {
     private String tag;
 
     @ApiModelProperty("点赞数")
-    private int loves;
+    private Long loves;
 
     @ApiModelProperty("收藏数")
-    private int collects;
+    private Long collects;
 
     @ApiModelProperty("浏览量")
-    private int views;
+    private Long views;
 
     @ApiModelProperty("评论数")
-    private int comments;
+    private Long comments;
 }

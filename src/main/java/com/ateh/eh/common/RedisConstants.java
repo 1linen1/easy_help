@@ -35,4 +35,14 @@ public class RedisConstants {
      * 邮箱验证码有效期（5分钟）
      */
     public static final Long EMAIL_CODE_VALID_TIME = 5 * 60L;
+
+    /**
+     * 粉丝列表key
+     */
+    public static final String FOLLOWS = "FOLLOWS:";
+
+    /**
+     * 关注列表key
+     */
+    public static final String CONCERNS = "CONCERNS:";
 }

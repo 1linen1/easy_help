@@ -61,13 +61,13 @@ public class User extends BaseEntity {
     private Long title;
 
     @ApiModelProperty("粉丝数")
-    private String follows;
+    private Long follows;
 
     @ApiModelProperty("关注数")
-    private String concerns;
+    private Long concerns;
 
     @ApiModelProperty("动态数")
-    private String dynamics;
+    private Long dynamics;
 
     @ApiModelProperty("是否被锁")
     private String locked;

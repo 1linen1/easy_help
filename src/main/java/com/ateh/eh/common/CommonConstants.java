@@ -35,4 +35,14 @@ public class CommonConstants {
      * 管理员
      */
     public static final String ADMIN_USER_1 = "1";
+
+    /**
+     * 动态 1
+     */
+    public static final String POST_TYPE_DYNAMIC = "1";
+
+    /**
+     * 求助帖 0
+     */
+    public static final String POST_TYPE_HELP = "0";
 }
