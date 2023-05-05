@@ -1,7 +1,9 @@
 package com.ateh.eh;
 
+import com.ateh.eh.websocket.WebSocket;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -13,7 +15,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class EasyHelpApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(EasyHelpApplication.class, args);
+
+        SpringApplication application = new SpringApplication();
+
+        ConfigurableApplicationContext run = SpringApplication.run(EasyHelpApplication.class, args);
+
+        WebSocket.setApplicationContext(run);
     }
 
 }

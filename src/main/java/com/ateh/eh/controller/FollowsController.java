@@ -1,9 +1,12 @@
 package com.ateh.eh.controller;
 
 import com.ateh.eh.entity.Follows;
+import com.ateh.eh.entity.ext.UserExt;
 import com.ateh.eh.req.comment.AddCommentReq;
+import com.ateh.eh.req.follows.FollowsPageReq;
 import com.ateh.eh.service.IFollowsService;
 import com.ateh.eh.utils.Result;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,4 +57,9 @@ public class FollowsController {
         return followsService.isFollow(userId);
     }
 
+    @PostMapping("/qryConcernsOrFollowsPage")
+    @ApiOperation("查询粉丝/关注")
+    public Result<IPage<UserExt>> qryConcernsOrFollowsPage(@RequestBody FollowsPageReq req) {
+        return followsService.qryConcernsOrFollowsPage(req);
+    }
 }

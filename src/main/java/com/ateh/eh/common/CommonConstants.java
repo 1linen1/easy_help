@@ -45,4 +45,14 @@ public class CommonConstants {
      * 求助帖 0
      */
     public static final String POST_TYPE_HELP = "0";
+
+    /**
+     * 未读 0
+     */
+    public static final String IS_READ_FALSE = "0";
+
+    /**
+     * 已读 1
+     */
+    public static final String IS_READ_TRUE = "1";
 }

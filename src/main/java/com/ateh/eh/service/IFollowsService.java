@@ -1,7 +1,10 @@
 package com.ateh.eh.service;
 
 import com.ateh.eh.entity.Follows;
+import com.ateh.eh.entity.ext.UserExt;
+import com.ateh.eh.req.follows.FollowsPageReq;
 import com.ateh.eh.utils.Result;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -45,4 +48,13 @@ public interface IFollowsService extends IService<Follows> {
      * 时间: 2023/5/1 23:33
      */
     Result isFollow(Long userId);
+
+    /**
+     * 功能描述: 分页查询粉丝/关注
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/5/5 16:07
+     */
+    Result<IPage<UserExt>> qryConcernsOrFollowsPage(FollowsPageReq req);
 }

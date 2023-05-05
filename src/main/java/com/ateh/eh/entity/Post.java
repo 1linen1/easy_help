@@ -59,4 +59,7 @@ public class Post extends BaseEntity {
 
     @ApiModelProperty("评论数")
     private Long comments;
+
+    @ApiModelProperty("用户附加的积分")
+    private Long scores;
 }

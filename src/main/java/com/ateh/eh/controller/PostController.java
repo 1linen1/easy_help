@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +48,12 @@ public class PostController {
     @ApiOperation("分页查询帖子")
     public Result<IPage<PostExt>> qryPostPage(@RequestBody PostPageReq req) {
         return postService.qryPostPage(req);
+    }
+
+    @GetMapping("/addViews/{postId}")
+    @ApiOperation("增加浏览量")
+    public Result addPostViews(@PathVariable("postId") Long postId) {
+        return postService.addPostViews(postId);
     }
 
 }

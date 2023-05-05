@@ -1,8 +1,7 @@
 package com.ateh.eh.entity.ext;
 
-import com.ateh.eh.entity.User;
+import com.ateh.eh.entity.Follows;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -10,10 +9,10 @@ import lombok.EqualsAndHashCode;
  * <p>
  * 类说明：TODO
  * <p>
- * 类名称: UserExt.java
+ * 类名称: FollowsExt.java
  *
  * @author huang.yijie
- * 时间: 2023/4/17 13:56
+ * 时间: 2023/5/5 16:02
  * <p>
  * Modification History:
  * Date Author Version Description
@@ -22,16 +21,6 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@ApiModel("用户拓展类")
-public class UserExt extends User {
-
-    @ApiModelProperty("称号")
-    private String titleName;
-
-    @ApiModelProperty("排名")
-    private Long rank;
-
-    @ApiModelProperty("是否关注")
-    private Boolean isFollow;
-
+@ApiModel("粉丝拓展类")
+public class FollowsExt extends Follows {
 }

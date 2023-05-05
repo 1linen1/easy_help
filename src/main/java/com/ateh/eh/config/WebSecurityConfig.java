@@ -42,6 +42,7 @@ public class WebSecurityConfig {
         return (web) -> web.ignoring().antMatchers(
                 "/favicon.ico",
                 "/static/ptai5mgut1eowaw1.png",
+                "/websocket/**",
                 "/images/**",
                 "/static/**",
                 "/js/**",

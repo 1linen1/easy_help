@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ateh.eh.mapper.FollowsMapper">
+
+    <sql id="Base_Colum_F">
+        f.follows_id, f.user_id, f.follow_id, f.status, f.create_date, f.create_staff, f.update_staff, f.update_staff
+    </sql>
+
+    <sql id="Base_Colum_U">
+        u.user_id, u.username, u.password, u.nickname, u.email, u.avatar, u.role, u.scores_total, u.scores_current, u.title, u.follows, u.concerns, u.dynamics, u.status, u.locked, u.create_date, u.create_staff, u.update_date, u.update_staff
+    </sql>
+
+    <select id="qryConcernsOrFollowsPage" resultType="com.ateh.eh.entity.ext.UserExt">
+        SELECT <include refid="Base_Colum_U"></include>
+        FROM follows f
+        <choose>
+            <when test="req.type != null and req.type == 'follows'">
+                LEFT JOIN user u ON f.follow_id = u.user_id
+            </when>
+            <otherwise>
+                LEFT JOIN user u ON f.user_id = u.user_id
+            </otherwise>
+        </choose>
+        <where>
+            <choose>
+                <when test="req.type != null and req.type == 'follows'">
+                    f.user_id= #{req.userId}
+                </when>
+                <otherwise>
+                    f.follow_id= #{req.userId}
+                </otherwise>
+            </choose>
+            AND f.status = '00A' AND u.status = '00A'
+        </where>
+        ORDER BY u.nickname ASC
+    </select>
+
+</mapper>

@@ -36,4 +36,13 @@ public interface IPostService extends IService<Post> {
      * 时间: 2023/4/23 0:26
      */
     Result<IPage<PostExt>> qryPostPage(PostPageReq req);
+
+    /**
+     * 功能描述: 新增帖子浏览量
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/5/5 22:40
+     */
+    Result addPostViews(Long postId);
 }

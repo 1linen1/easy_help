@@ -3,15 +3,21 @@ package com.ateh.eh.service.impl;
 import com.ateh.eh.common.CommonConstants;
 import com.ateh.eh.common.RedisConstants;
 import com.ateh.eh.entity.Follows;
+import com.ateh.eh.entity.ext.UserExt;
 import com.ateh.eh.mapper.FollowsMapper;
+import com.ateh.eh.req.follows.FollowsPageReq;
 import com.ateh.eh.service.IFollowsService;
 import com.ateh.eh.utils.Result;
 import com.ateh.eh.utils.UserHolder;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -79,5 +85,20 @@ public class FollowsServiceImpl extends ServiceImpl<FollowsMapper, Follows> impl
         Boolean isMember = redisTemplate.opsForSet().isMember(key, id.toString());
 
         return Result.success(isMember, "查询成功");
+    }
+
+    @Override
+    public Result<IPage<UserExt>> qryConcernsOrFollowsPage(FollowsPageReq req) {
+        IPage<UserExt> userPage = followsMapper.qryConcernsOrFollowsPage(req.toPage(), req);
+        List<UserExt> records = userPage.getRecords();
+        records.forEach(record ->
+                record.setIsFollow(
+                        redisTemplate.opsForSet().isMember(
+                                RedisConstants.FOLLOWS + record.getUserId(), req.getUserId().toString()
+                        )
+                )
+        );
+        userPage.setRecords(records);
+        return Result.success(userPage);
     }
 }

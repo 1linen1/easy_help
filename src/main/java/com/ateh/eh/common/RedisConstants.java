@@ -45,4 +45,9 @@ public class RedisConstants {
      * 关注列表key
      */
     public static final String CONCERNS = "CONCERNS:";
+
+    /**
+     * 帖子的浏览量
+     */
+    public static final String POST_VIEWS = "POST_VIEWS:";
 }
