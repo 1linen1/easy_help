@@ -15,10 +15,12 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ateh.eh.common.CommonConstants;
+import com.ateh.eh.common.RedisConstants;
 import com.ateh.eh.entity.Message;
 import com.ateh.eh.mapper.MessageMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +55,8 @@ public class WebSocket {
      * 用户ID
      */
     private String userId;
+
+    private StringRedisTemplate redisTemplate;
 
     //concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。
     //虽然@Component默认是单例模式的，但springboot还是会为每个websocket连接初始化一个bean，所以可以用一个静态set保存起来。
@@ -100,14 +104,15 @@ public class WebSocket {
      * @param message
      */
     @OnMessage
-    public void onMessage(String message) {
+    public String onMessage(String message) {
         log.info("【websocket消息】收到客户端消息:" + message);
         JSONObject jsonObject = JSON.parseObject(message);
         String content = (String) jsonObject.get("content");
         String userId = (String) jsonObject.get("userId");
         if (StrUtil.isNotEmpty(userId) && StrUtil.isNotEmpty(content)) {
-            sendOneMessage(userId, content);
+            return sendOneMessage(userId, content);
         }
+        return StrUtil.EMPTY_JSON;
     }
 
     /** 发送错误时的处理
@@ -136,13 +141,15 @@ public class WebSocket {
     }
 
     // 此为单点消息
-    public void sendOneMessage(String userId, String content) {
+    public String sendOneMessage(String userId, String content) {
         Message msg = new Message();
         msg.setContent(content);
         msg.setSourceId(Long.valueOf(this.userId));
         msg.setTargetId(Long.valueOf(userId));
         msg.setIsRead(CommonConstants.IS_READ_FALSE);
         msg.setType(CommonConstants.IS_READ_FALSE);
+        messageMapper = applicationContext.getBean(MessageMapper.class);
+        redisTemplate = applicationContext.getBean(StringRedisTemplate.class);
 
         Session session = sessionPool.get(userId);
         if (session != null && session.isOpen()) {
@@ -151,13 +158,21 @@ public class WebSocket {
 
                 msg.setIsRead(CommonConstants.IS_READ_TRUE);
                 messageMapper.insert(msg);
+
+                // 将最后的消息存入Redis中
+                redisTemplate.opsForValue().set(RedisConstants.LAST_MESSAGE + this.userId + ":" + userId, JSON.toJSONString(msg));
+                redisTemplate.opsForValue().set(RedisConstants.LAST_MESSAGE + userId + ":" + this.userId, JSON.toJSONString(msg));
                 session.getAsyncRemote().sendText(JSON.toJSONString(msg));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             messageMapper.insert(msg);
+            // 将最后的消息存入Redis中
+            redisTemplate.opsForValue().set(RedisConstants.LAST_MESSAGE + this.userId + ":" + userId, JSON.toJSONString(msg));
+            redisTemplate.opsForValue().set(RedisConstants.LAST_MESSAGE + userId + ":" + this.userId, JSON.toJSONString(msg));
         }
+        return JSON.toJSONString(msg);
     }
 
     // 此为单点消息(多人)

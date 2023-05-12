@@ -1,5 +1,8 @@
 package com.ateh.eh.controller;
 
+import com.ateh.eh.entity.Post;
+import com.ateh.eh.entity.ext.UserExt;
+import com.ateh.eh.req.posts.UpdateUserScoresReq;
 import com.ateh.eh.req.user.MyRankReq;
 import com.ateh.eh.req.user.RankPageReq;
 import com.ateh.eh.req.user.UpdateNicknameReq;
@@ -12,10 +15,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * <p>
@@ -76,8 +82,32 @@ public class UserController {
     }
 
     @PostMapping("/getMyRank")
-    @ApiOperation("获取当前用户信息")
+    @ApiOperation("获取当前用户排名")
     public Result getMyRank(@RequestBody MyRankReq req) {
         return userService.getMyRank(req);
+    }
+
+    @GetMapping("/getUserInfo/{userId}")
+    @ApiOperation("获取当前用户信息")
+    public Result getUserInfo(@PathVariable("userId")Long userId) {
+        return userService.getUserInfo(userId);
+    }
+
+    @GetMapping("/qryChatList/{userId}")
+    @ApiOperation("获取聊天用户")
+    public Result qryChatList(@PathVariable("userId") Long userId) {
+        return userService.qryChatList(userId);
+    }
+
+    @PostMapping("/qryHelpUserList")
+    @ApiOperation("获取当前帮助的用户")
+    public Result qryHelpUserList(@RequestBody Post req) {
+        return userService.qryHelpUserList(req);
+    }
+
+    @PostMapping("/updateUserScores")
+    @ApiOperation("更新用户积分")
+    public Result updateUserScores(@RequestBody UpdateUserScoresReq req) {
+        return userService.updateUserScores(req);
     }
 }

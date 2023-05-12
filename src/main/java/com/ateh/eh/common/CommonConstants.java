@@ -27,6 +27,16 @@ public class CommonConstants {
     public static final String STATUS_VALID = "00A";
 
     /**
+     * 帖子已解决状态 00R
+     */
+    public static final String POST_RESOLVED = "00R";
+
+    /**
+     * 帖子未解决状态 00U
+     */
+    public static final String POST_UNRESOLVED = "00U";
+
+    /**
      * 普通用户
      */
     public static final String NORMAL_USER_2 = "2";

@@ -5,14 +5,56 @@
 <mapper namespace="com.ateh.eh.mapper.PostMapper">
 
     <sql id="Base_Colum_P">
-        p.post_id, p.user_id, p.content, p.images, p.type, p.status, p.loves, p.collects, p.views, p.comments, p.create_date, p.create_staff, p.update_date, p.update_staff
+        p.post_id, p.user_id, p.content, p.images, p.type, p.status, p.loves, p.collects, p.views, p.comments, p.resolved, p.scores, p.create_date, p.create_staff, p.update_date, p.update_staff
     </sql>
 
     <select id="qryPostPage" parameterType="com.ateh.eh.req.posts.PostPageReq" resultType="com.ateh.eh.entity.ext.PostExt">
         SELECT <include refid="Base_Colum_P"/>, u.user_id, u.avatar, u.nickname
         FROM post p
             LEFT JOIN user u ON p.user_id = u.user_id
-        WHERE p.user_id = u.user_id AND p.status = '00A' AND u.status = '00A'
+        <where>
+            p.user_id = u.user_id AND p.status = '00A' AND u.status = '00A' AND p.type = '0'
+            <if test="req.sortedType != null and req.sortedType == 'myself'">
+                AND u.user_id = #{req.userId}
+            </if>
+            <if test="req.sortedType == null or req.sortedType != 'myself'">
+                AND p.resolved = '00U'
+            </if>
+        </where>
+        <choose>
+            <when test="req.sortedType != null and req.sortedType == 'time'">
+                ORDER BY p.create_date DESC
+            </when>
+            <when test="req.sortedType != null and req.sortedType == 'views'">
+                ORDER BY p.views DESC
+            </when>
+            <when test="req.sortedType != null and req.sortedType == 'scores'">
+                ORDER BY p.scores DESC
+            </when>
+            <when test="req.sortedType != null and req.sortedType == 'myself'">
+                ORDER BY p.create_date DESC
+            </when>
+        </choose>
+
+    </select>
+
+    <select id="qryHelpPostPage" resultType="com.ateh.eh.entity.ext.PostExt">
+        SELECT <include refid="Base_Colum_P"/>, u.user_id, u.avatar, u.nickname, h.scores as assignedScores
+        FROM user_help_post h
+            LEFT JOIN post p ON p.post_id = h.post_id
+            LEFT JOIN user u ON p.user_id = u.user_id
+        WHERE h.positive_user_id = #{req.userId} AND h.status != '00X' AND p.status = '00A' AND p.type = '0'
+        ORDER BY h.create_date DESC
+    </select>
+
+    <select id="qryPostPageByContent" parameterType="com.ateh.eh.req.posts.PostPageReq" resultType="com.ateh.eh.entity.ext.PostExt">
+        SELECT <include refid="Base_Colum_P"/>, u.user_id, u.avatar, u.nickname
+        FROM post p
+        LEFT JOIN user u ON p.user_id = u.user_id
+        <where>
+            p.user_id = u.user_id AND p.status = '00A' AND u.status = '00A' AND p.resolved = '00U' AND p.type = '0'
+            AND ( p.content LIKE CONCAT('%', #{req.content}, '%') OR u.nickname LIKE CONCAT('%', #{req.content}, '%'))
+        </where>
         <choose>
             <when test="req.sortedType != null and req.sortedType == 'time'">
                 ORDER BY p.create_date DESC
@@ -27,4 +69,16 @@
 
     </select>
 
+    <select id="qryDynamicPage" parameterType="com.ateh.eh.req.posts.PostPageReq" resultType="com.ateh.eh.entity.ext.PostExt">
+
+        SELECT <include refid="Base_Colum_P"/>, u.user_id, u.avatar, u.nickname
+        FROM post p
+        LEFT JOIN user u ON p.user_id = u.user_id
+        WHERE p.status = '00A' AND u.status = '00A' AND p.type = '1' AND u.user_id IN
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        ORDER BY p.create_date DESC
+
+    </select>
 </mapper>

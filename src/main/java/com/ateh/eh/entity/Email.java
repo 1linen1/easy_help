@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * Copyright: Copyright(c) 2022 iwhalecloud
  * <p>
  * 类说明：TODO
  * <p>

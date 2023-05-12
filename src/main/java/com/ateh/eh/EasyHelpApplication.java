@@ -15,9 +15,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class EasyHelpApplication {
 
     public static void main(String[] args) {
-
-        SpringApplication application = new SpringApplication();
-
         ConfigurableApplicationContext run = SpringApplication.run(EasyHelpApplication.class, args);
 
         WebSocket.setApplicationContext(run);

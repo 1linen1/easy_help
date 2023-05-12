@@ -8,7 +8,12 @@ import com.alibaba.fastjson.JSON;
 import com.ateh.eh.auth.LoginUser;
 import com.ateh.eh.common.CommonConstants;
 import com.ateh.eh.common.RedisConstants;
+import com.ateh.eh.entity.Message;
+import com.ateh.eh.entity.Post;
+import com.ateh.eh.entity.UserHelpPost;
 import com.ateh.eh.entity.ext.UserExt;
+import com.ateh.eh.mapper.UserHelpPostMapper;
+import com.ateh.eh.req.posts.UpdateUserScoresReq;
 import com.ateh.eh.req.user.MyRankReq;
 import com.ateh.eh.req.user.RankPageReq;
 import com.ateh.eh.req.user.UpdateNicknameReq;
@@ -37,10 +42,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @Scope(name = "prototype", description = "")
@@ -60,6 +69,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private UserHelpPostMapper helpPostMapper;
 
     @Override
     public Result login(UserLoginReq req) {
@@ -139,8 +151,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         user.setPassword(passwordEncoder.encode(req.getPassword()));
         user.setNickname(RandomUtil.randomString(6));
+
+        user.setAvatar(getAvatar());
         userMapper.insert(user);
         return Result.success("注册成功!");
+    }
+
+    private String getAvatar() {
+        String[] strings = {
+                "https://yeasy-helpj.oss-cn-hangzhou.aliyuncs.com/posts/20230510205806080.jpeg", // 阿贝多
+                "https://yeasy-helpj.oss-cn-hangzhou.aliyuncs.com/posts/20230510210324073.jpeg", // 艾诺尔
+                "https://yeasy-helpj.oss-cn-hangzhou.aliyuncs.com/posts/20230510210346336.jpeg", // 哒哒哒
+                "https://yeasy-helpj.oss-cn-hangzhou.aliyuncs.com/posts/20230510210406115.jpeg", // 将军
+                "https://yeasy-helpj.oss-cn-hangzhou.aliyuncs.com/posts/20230510210425483.jpeg", // 可莉
+                "https://yeasy-helpj.oss-cn-hangzhou.aliyuncs.com/posts/20230510210451200.jpeg", // 绫华
+                "https://yeasy-helpj.oss-cn-hangzhou.aliyuncs.com/posts/20230510210509056.jpeg", // 派蒙
+                "https://yeasy-helpj.oss-cn-hangzhou.aliyuncs.com/posts/20230510210533395.jpeg", // 万叶
+                "https://yeasy-helpj.oss-cn-hangzhou.aliyuncs.com/posts/20230510210551972.jpeg", // 香菱
+                "https://yeasy-helpj.oss-cn-hangzhou.aliyuncs.com/posts/20230510210611745.jpeg", // 心海
+        };
+        int index = RandomUtil.randomInt(0, strings.length + 1);
+
+        return strings[index];
     }
 
     @Override
@@ -174,27 +206,94 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
         LambdaQueryWrapper<User> lqw2 = new LambdaQueryWrapper<>();
-        User user = userMapper.selectById(req.getUserId());
+        User tempUser = userMapper.selectById(req.getUserId());
+        UserExt userExt = userMapper.qryUserByName(tempUser.getUsername());
 
         if ("Current".equals(orderType)) {
-            lqw.gt(true, User::getScoresCurrent, user.getScoresCurrent());
-            lqw2.eq(true, User::getScoresCurrent, user.getScoresCurrent());
+            lqw.gt(true, User::getScoresCurrent, userExt.getScoresCurrent());
+            lqw2.eq(true, User::getScoresCurrent, userExt.getScoresCurrent());
         } else if ("Total".equals(orderType)) {
-            lqw.gt(true, User::getScoresTotal, user.getScoresTotal());
-            lqw2.eq(true, User::getScoresTotal, user.getScoresTotal());
+            lqw.gt(true, User::getScoresTotal, userExt.getScoresTotal());
+            lqw2.eq(true, User::getScoresTotal, userExt.getScoresTotal());
         } else {
             return Result.error("分类类型未指定!");
         }
         lqw.eq(User::getStatus, CommonConstants.STATUS_VALID);
 
-        lqw2.gt(User::getCreateDate, user.getCreateDate());
+        lqw2.gt(User::getCreateDate, userExt.getCreateDate());
         lqw2.eq(User::getStatus, CommonConstants.STATUS_VALID);
 
         Long count = userMapper.selectCount(lqw);
         Long count2 = userMapper.selectCount(lqw2);
 
-        UserExt userExt = BeanUtil.toBean(user, UserExt.class);
         userExt.setRank(++count + count2);
         return Result.success(userExt, "查询成功!");
+    }
+
+    @Override
+    public Result getUserInfo(Long userId) {
+        return Result.success(userMapper.getUserInfo(userId));
+    }
+
+    @Override
+    public Result qryChatList(Long userId) {
+        List<UserExt> userList = userMapper.qryChatList(userId);
+
+        List<UserExt> list = userList.stream().peek(item -> {
+            String value = redisTemplate.opsForValue().get(RedisConstants.LAST_MESSAGE + userId + ":" + item.getUserId());
+            if (StrUtil.isNotEmpty(value)) {
+                item.setLastMessage(JSON.parseObject(value, Message.class));
+            }
+        }).collect(Collectors.toList());
+
+        return Result.success(list);
+    }
+
+    @Override
+    public Result qryHelpUserList(Post req) {
+        return Result.success(userMapper.qryHelpUserList(req));
+    }
+
+    @Override
+    public Result updateUserScores(UpdateUserScoresReq req) {
+        List<UserExt> userExtList = req.getUserExtList();
+        userExtList.forEach(userExt -> {
+            User user = new User();
+            user.setUserId(userExt.getUserId());
+            user.setScoresCurrent(userExt.getScoresCurrent() + userExt.getAssignedScores());
+            user.setScoresTotal(userExt.getScoresTotal() + userExt.getAssignedScores());
+
+            String value = redisTemplate.opsForValue().get(RedisConstants.POST_HELP + userExt.getUserId() + ":" + req.getPostId());
+
+            LambdaQueryWrapper<UserHelpPost> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(UserHelpPost::getPostId, req.getPostId());
+            lqw.eq(UserHelpPost::getPassiveUserId, req.getUserId());
+            lqw.eq(UserHelpPost::getPositiveUserId, userExt.getUserId());
+            lqw.ne(UserHelpPost::getStatus, CommonConstants.STATUS_INVALID);
+
+            UserHelpPost userHelpPost = new UserHelpPost();
+            userHelpPost.setPostId(req.getPostId());
+            userHelpPost.setPassiveUserId(req.getUserId());
+            userHelpPost.setPositiveUserId(userExt.getUserId());
+            userHelpPost.setScores(userExt.getAssignedScores());
+            userHelpPost.setStatus(CommonConstants.POST_RESOLVED);
+            if (StrUtil.isEmpty(value)) {
+                // 如果为空，二次检查是否已经有数据
+                long count = helpPostMapper.selectCount(lqw);
+                if (count <= 0) {
+                    // 没有记录，说明是私聊的，不是评论帮助，插入数据
+                    helpPostMapper.insert(userHelpPost);
+                } else {
+                    // 说明已经有记录了，更新状态
+                    helpPostMapper.update(userHelpPost, lqw);
+                }
+            } else {
+                // 说明肯定有记录，直接更新状态
+                helpPostMapper.update(userHelpPost, lqw);
+            }
+            redisTemplate.delete(RedisConstants.POST_HELP + userExt.getUserId() + ":" + req.getPostId());
+            userMapper.updateById(user);
+        });
+        return Result.success("分配积分成功!");
     }
 }

@@ -18,21 +18,18 @@ import lombok.Data;
  * ------------------------------------------------------------
  * @version v1.0.0
  */
-@ApiModel("新增评论请求")
+@ApiModel("删除评论请求")
 @Data
-public class AddCommentReq {
+public class DeleteCommentReq {
+
+    @ApiModelProperty("评论id")
+    private Long commentId;
 
     @ApiModelProperty("帖子id")
     private Long postId;
 
     @ApiModelProperty("用户id")
     private Long userId;
-
-    @ApiModelProperty("父评论id")
-    private Long parentId;
-
-    @ApiModelProperty("评论内容")
-    private String content;
 
     @ApiModelProperty("帖子拥有者id")
     private Long postUserId;

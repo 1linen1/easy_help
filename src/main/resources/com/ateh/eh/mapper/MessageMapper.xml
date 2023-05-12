@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ateh.eh.mapper.MessageMapper">
+
+    <sql id="Base_Colum_M">
+        m.message_id, m.content, m.source_id, m.target_id, m.is_read, m.type, m.status, m.create_date, m.create_staff, m.update_staff, m.update_staff
+    </sql>
+
+    <select id="qryMessagePage" resultType="com.ateh.eh.entity.Message">
+        SELECT <include refid="Base_Colum_M"/>
+        FROM message m
+        WHERE ((m.source_id = #{req.sourceId} AND m.target_id = #{req.targetId})
+                   OR (m.source_id = #{req.targetId} AND m.target_id = #{req.sourceId})) AND m.status = '00A'
+        ORDER BY m.create_date DESC
+    </select>
+
+</mapper>

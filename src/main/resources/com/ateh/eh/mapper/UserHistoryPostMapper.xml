@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ateh.eh.mapper.UserHistoryPostMapper">
+
+    <sql id="Base_Colum_P">
+        p.post_id, p.user_id, p.content, p.images, p.type, p.status, p.loves, p.collects, p.views, p.comments, p.scores, p.resolved, p.create_date, p.create_staff, p.update_date, p.update_staff
+    </sql>
+
+    <select id="qryHistoryPage" resultType="com.ateh.eh.entity.ext.PostExt">
+        SELECT <include refid="Base_Colum_P"/>, u.user_id, u.avatar, u.nickname
+        FROM user_history_post h
+            LEFT JOIN post p ON h.post_id = p.post_id
+            LEFT JOIN user u ON p.user_id = u.user_id
+        WHERE h.user_id = #{req.userId} AND h.status = '00A' AND p.status = '00A' AND u.status = '00A'
+        ORDER BY h.update_date DESC, h.create_date DESC
+    </select>
+
+</mapper>

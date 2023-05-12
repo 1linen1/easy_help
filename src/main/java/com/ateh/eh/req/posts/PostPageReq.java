@@ -30,4 +30,10 @@ public class PostPageReq extends BasePageReq {
     @ApiModelProperty("排序类型, time时间，views浏览量，scores积分")
     private String sortedType;
 
+    @ApiModelProperty("用户id，查询我的帖子使用")
+    private Long userId;
+
+    @ApiModelProperty("帖子内容/用户名称")
+    private String content;
+
 }

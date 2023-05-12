@@ -1,7 +1,10 @@
 package com.ateh.eh.service;
 
+import com.ateh.eh.entity.Post;
 import com.ateh.eh.entity.User;
+import com.ateh.eh.entity.ext.UserExt;
 import com.ateh.eh.mapper.UserMapper;
+import com.ateh.eh.req.posts.UpdateUserScoresReq;
 import com.ateh.eh.req.user.MyRankReq;
 import com.ateh.eh.req.user.RankPageReq;
 import com.ateh.eh.req.user.UpdateNicknameReq;
@@ -11,6 +14,8 @@ import com.ateh.eh.req.user.VerificationCodeReq;
 import com.ateh.eh.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import java.util.List;
 
 /**
  * <p>
@@ -81,11 +86,47 @@ public interface IUserService extends IService<User>{
     Result getRankPage(RankPageReq req);
 
     /**
-     * 功能描述: 获取当前用户信息
+     * 功能描述: 获取当前用户排名
      *
      * @return com.ateh.eh.utils.Result
      * @author huang.yijie
      * 时间: 2023/4/18 16:18
      */
     Result getMyRank(MyRankReq req);
+
+    /**
+     * 功能描述: 获取当前用户信息
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/5/7 23:21
+     */
+    Result getUserInfo(Long userId);
+
+    /**
+     * 功能描述: 获取聊天用户
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/5/10 21:56
+     */
+    Result qryChatList(Long userId);
+
+    /**
+     * 功能描述: 获取当前帮助的用户
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/5/11 13:21
+     */
+    Result qryHelpUserList(Post req);
+
+    /**
+     * 功能描述: 更新用户积分
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/5/11 15:34
+     */
+    Result updateUserScores(UpdateUserScoresReq req);
 }

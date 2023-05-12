@@ -1,10 +1,13 @@
 package com.ateh.eh.entity.ext;
 
+import com.ateh.eh.entity.Message;
 import com.ateh.eh.entity.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.Date;
 
 /**
  * <p>
@@ -33,5 +36,11 @@ public class UserExt extends User {
 
     @ApiModelProperty("是否关注")
     private Boolean isFollow;
+
+    @ApiModelProperty("最后的聊天消息")
+    private Message lastMessage;
+
+    @ApiModelProperty("帖子结束后分配的积分")
+    private Long assignedScores;
 
 }

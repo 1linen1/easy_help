@@ -3,6 +3,7 @@ package com.ateh.eh.service;
 import com.ateh.eh.entity.Comment;
 import com.ateh.eh.req.comment.AddCommentReq;
 import com.ateh.eh.req.comment.CommentPageReq;
+import com.ateh.eh.req.comment.DeleteCommentReq;
 import com.ateh.eh.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -47,5 +48,5 @@ public interface ICommentService extends IService<Comment> {
      * @author huang.yijie
      * 时间: 2023/4/24 15:34
      */
-    Result deleteComment(Long commentId);
+    Result deleteComment(DeleteCommentReq req);
 }

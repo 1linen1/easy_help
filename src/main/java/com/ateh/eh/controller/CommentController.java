@@ -2,6 +2,7 @@ package com.ateh.eh.controller;
 
 import com.ateh.eh.req.comment.AddCommentReq;
 import com.ateh.eh.req.comment.CommentPageReq;
+import com.ateh.eh.req.comment.DeleteCommentReq;
 import com.ateh.eh.service.ICommentService;
 import com.ateh.eh.utils.Result;
 import io.swagger.annotations.Api;
@@ -43,10 +44,10 @@ public class CommentController {
         return commentService.addComment(req);
     }
 
-    @GetMapping("/deleteComment/{commentId}")
+    @PostMapping("/deleteComment")
     @ApiOperation("删除评论")
-    public Result deleteComment(@PathVariable("commentId") Long commentId) {
-        return commentService.deleteComment(commentId);
+    public Result deleteComment(@RequestBody DeleteCommentReq req) {
+        return commentService.deleteComment(req);
     }
 
     @PostMapping("/qryPostCommentPage")

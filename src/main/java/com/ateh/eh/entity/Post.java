@@ -62,4 +62,7 @@ public class Post extends BaseEntity {
 
     @ApiModelProperty("用户附加的积分")
     private Long scores;
+
+    @ApiModelProperty("是否已解决（00R已解决，00U未解决）")
+    private String resolved;
 }

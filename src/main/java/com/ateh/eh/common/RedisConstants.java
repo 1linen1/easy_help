@@ -50,4 +50,25 @@ public class RedisConstants {
      * 帖子的浏览量
      */
     public static final String POST_VIEWS = "POST_VIEWS:";
+
+    /**
+     * 帖子浏览历史
+     */
+    public static final String POST_HISTORY = "POST_HISTORY:";
+
+    /**
+     * 帖子收藏
+     */
+    public static final String POST_COLLECT = "POST_COLLECT:";
+
+    /**
+     * 最后的消息
+     */
+    public static final String LAST_MESSAGE = "LAST_MESSAGE:";
+
+    /**
+     * 帖子帮助历史
+     */
+    public static final String POST_HELP = "POST_HELP:";
+
 }

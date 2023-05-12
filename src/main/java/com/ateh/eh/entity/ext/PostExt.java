@@ -34,4 +34,10 @@ public class PostExt extends Post {
     @ApiModelProperty("头像")
     private String avatar;
 
+    @ApiModelProperty("是否被收藏")
+    private Boolean isCollect;
+
+    @ApiModelProperty("已分配的积分")
+    private Long assignedScores;
+
 }
