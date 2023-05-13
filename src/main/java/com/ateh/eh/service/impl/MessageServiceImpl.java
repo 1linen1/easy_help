@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Copyright: Copyright(c) 2022 iwhalecloud
  * <p>
  * 类说明：TODO
  * <p>

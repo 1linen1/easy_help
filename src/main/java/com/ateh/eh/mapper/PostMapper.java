@@ -59,4 +59,22 @@ public interface PostMapper extends BaseMapper<Post> {
      * 时间: 2023/5/12 19:25
      */
     IPage<PostExt> qryDynamicPage(@Param("page") Page<PostExt> toPage, @Param("req") PostPageReq req, @Param("ids") List<Long> ids);
+
+    /**
+     * 功能描述: 随机取出数据
+     *
+     * @return java.util.List<com.ateh.eh.entity.ext.PostExt>
+     * @author huang.yijie
+     * 时间: 2023/5/13 16:07
+     */
+    List<PostExt> randomSelectPost(@Param("num") int num);
+
+    /**
+     * 功能描述: 根据推荐id查询帖子
+     *
+     * @return java.util.List<com.ateh.eh.entity.ext.PostExt>
+     * @author huang.yijie
+     * 时间: 2023/5/13 16:07
+     */
+    List<PostExt> selectByRecommendId(@Param("ids") List<Long> ids);
 }

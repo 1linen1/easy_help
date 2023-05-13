@@ -1,23 +1,29 @@
 package com.ateh.eh.service.impl;
 
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.ateh.eh.common.CommonConstants;
 import com.ateh.eh.common.RedisConstants;
 import com.ateh.eh.entity.Post;
-import com.ateh.eh.entity.User;
+import com.ateh.eh.entity.Recommend;
 import com.ateh.eh.entity.ext.PostExt;
 import com.ateh.eh.entity.ext.UserExt;
 import com.ateh.eh.mapper.FollowsMapper;
 import com.ateh.eh.mapper.PostMapper;
+import com.ateh.eh.mapper.RecommendMapper;
 import com.ateh.eh.mapper.UserMapper;
 import com.ateh.eh.req.follows.FollowsPageReq;
 import com.ateh.eh.req.posts.PostPageReq;
 import com.ateh.eh.service.IPostService;
+import com.ateh.eh.utils.EmailTask;
 import com.ateh.eh.utils.Result;
 import com.ateh.eh.utils.ScoresUtil;
 import com.ateh.eh.utils.UserHolder;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.swagger.annotations.Scope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -41,7 +47,11 @@ import java.util.stream.Collectors;
  * @version v1.0.0
  */
 @Service
+@Scope(name = "prototype", description = "")
 public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements IPostService{
+
+    @Autowired
+    private EmailTask emailTask;
 
     @Autowired
     private PostMapper postMapper;
@@ -51,6 +61,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements IP
 
     @Autowired
     private FollowsMapper followsMapper;
+
+    @Autowired
+    private RecommendMapper recommendMapper;
 
     @Autowired
     private StringRedisTemplate redisTemplate;
@@ -79,23 +92,67 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements IP
     }
 
     @Override
-    public Result addPostViews(Long postId) {
+    public Result addPostViews(Post post) {
         long finalViews;
+        Long postId = post.getPostId();
         String views = redisTemplate.opsForValue().get(RedisConstants.POST_VIEWS + postId);
-        Post post = new Post();
+        Post nPost = new Post();
         if (StrUtil.isBlank(views)) {
-            post = postMapper.selectById(postId);
-            finalViews = post.getViews();
+            nPost = postMapper.selectById(postId);
+            finalViews = nPost.getViews();
         } else {
             finalViews = Long.parseLong(views);
         }
         ++finalViews;
         redisTemplate.opsForValue().set(RedisConstants.POST_VIEWS + postId, String.valueOf(finalViews));
 
-        post.setPostId(postId);
-        post.setViews(finalViews);
-        postMapper.updateById(post);
+        nPost.setPostId(postId);
+        nPost.setViews(finalViews);
+        postMapper.updateById(nPost);
+
+        Long userId = UserHolder.getLoginUser().getUserId();
+
+        // 协同推荐
+        if (!Objects.equals(post.getUserId(), userId)) {
+            recommendOperation(postId, userId);
+        }
+
         return Result.success("");
+    }
+
+    private void recommendOperation(Long postId, Long userId) {
+        Recommend recommend = new Recommend();
+        Object loves = redisTemplate.opsForHash().get(RedisConstants.RECOMMEND + userId + ":" + postId, "loves");
+        Object recommendId = redisTemplate.opsForHash().get(RedisConstants.RECOMMEND + userId + ":" + postId, "recommend_id");
+
+        if (Objects.isNull(loves) || Objects.isNull(recommendId)) {
+            LambdaQueryWrapper<Recommend> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(Recommend::getUserId, userId);
+            lqw.eq(Recommend::getPostId, postId);
+            lqw.eq(Recommend::getStatus, CommonConstants.STATUS_VALID);
+            Recommend result = recommendMapper.selectOne(lqw);
+            if (Objects.isNull(result)) {
+                // 说明数据库和缓存中都没有值，插入数据
+                recommend.setPostId(postId);
+                recommend.setUserId(userId);
+                recommend.setLoves(0.5F);
+                recommendMapper.insert(recommend);
+            } else {
+                // 说明只是Redis中没有数据，更新数据库数据，并存入Redis中
+                float loveNum = recommend.getLoves();
+                recommend.setLoves(loveNum + 0.5F);
+                recommend.setRecommendId(result.getRecommendId());
+                recommendMapper.updateById(recommend);
+            }
+            redisTemplate.opsForHash().put(RedisConstants.RECOMMEND + userId + ":" + postId, "recommend_id", String.valueOf(recommend.getRecommendId()));
+        } else  {
+            // 说明缓存中有值，直接使用缓存中保存的recommendId和loves，更新数据库与缓存就行
+            Long id = Long.valueOf((String) recommendId);
+            recommend.setRecommendId(id);
+            recommend.setLoves(Float.parseFloat((String) loves) + 0.5F);
+            recommendMapper.updateById(recommend);
+        }
+        redisTemplate.opsForHash().put(RedisConstants.RECOMMEND + userId + ":" + postId, "loves", String.valueOf(recommend.getLoves()));
     }
 
     @Override
@@ -133,4 +190,54 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements IP
         IPage<PostExt> posts = postMapper.qryDynamicPage(req.toPage(), req, ids);
         return Result.success(posts);
     }
+
+    @Override
+    public Result qryRecommendPost(PostPageReq req) {
+        emailTask.calRecommendSync(req.getUserId());
+        String str = redisTemplate.opsForValue().get(RedisConstants.RECOMMEND_POST + req.getUserId());
+        List<PostExt> postExts;
+        List<PostExt> collects;
+        if (StrUtil.isNotEmpty(str)) {
+            postExts = JSON.parseArray(str, PostExt.class);
+            // 过滤出没有被用户看过的帖子
+            assert postExts != null;
+            collects = postExts.stream()
+                    .filter(item -> Boolean.FALSE.equals(redisTemplate.opsForSet().isMember(RedisConstants.RECOMMENDED_POST + req.getUserId(),
+                            String.valueOf(item.getPostId()))))
+                    .limit(10)
+                    .collect(Collectors.toList());
+            if (collects.size() <= 0) {
+                postExts = postMapper.randomSelectPost(100);
+                collects = postExts.stream()
+                        .filter(item -> Boolean.FALSE.equals(redisTemplate.opsForSet().isMember(RedisConstants.RECOMMENDED_POST + req.getUserId(),
+                                String.valueOf(item.getPostId()))))
+                        .limit(10)
+                        .collect(Collectors.toList());
+            }
+            collects.forEach(item -> redisTemplate.opsForSet().add(RedisConstants.RECOMMENDED_POST + req.getUserId(),
+                    String.valueOf(item.getPostId())));
+
+        } else {
+            postExts = postMapper.randomSelectPost(100);
+            collects = postExts.stream()
+                    .filter(item -> Boolean.FALSE.equals(redisTemplate.opsForSet().isMember(RedisConstants.RECOMMENDED_POST + req.getUserId(),
+                            String.valueOf(item.getPostId()))))
+                    .limit(10)
+                    .collect(Collectors.toList());
+            collects.forEach(item -> redisTemplate.opsForSet().add(RedisConstants.RECOMMENDED_POST + req.getUserId(),
+                    String.valueOf(item.getPostId())));
+        }
+
+        return Result.success(collects);
+    }
+
+//    public static void main(String[] args) {
+//        String url = "jdbc:mysql://127.0.0.1:3306/easy_help";
+//        int doubleIndex = url.lastIndexOf("//");
+//        int semiIndex = url.lastIndexOf(":");
+//        int singleIndex = url.lastIndexOf("/");
+//        String host = url.substring(doubleIndex + 2, semiIndex);
+//        String port = url.substring(semiIndex + 1, singleIndex);
+//        System.out.println(host + "   " + port);
+//    }
 }

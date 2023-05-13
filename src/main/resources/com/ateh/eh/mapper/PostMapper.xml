@@ -81,4 +81,23 @@
         ORDER BY p.create_date DESC
 
     </select>
+
+    <select id="randomSelectPost" resultType="com.ateh.eh.entity.ext.PostExt">
+        SELECT <include refid="Base_Colum_P"/>, u.user_id, u.avatar, u.nickname
+        FROM post p
+            LEFT JOIN user u ON p.user_id = u.user_id
+        WHERE p.status = '00A' AND p.resolved = '00U' AND p.type = '0' AND u.status = '00A'
+        LIMIT #{num};
+    </select>
+
+    <select id="selectByRecommendId" resultType="com.ateh.eh.entity.ext.PostExt">
+        SELECT <include refid="Base_Colum_P"/>, u.user_id, u.avatar, u.nickname
+        FROM recommend r
+            LEFT JOIN post p ON p.post_id = r.post_id
+            LEFT JOIN user u ON p.user_id = u.user_id
+        WHERE p.status = '00A' AND p.resolved = '00U' AND p.type = '0' AND  u.status = '00A' AND r.recommend_id IN
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+    </select>
 </mapper>

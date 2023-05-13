@@ -47,7 +47,7 @@ public interface IPostService extends IService<Post> {
      * @author huang.yijie
      * 时间: 2023/5/5 22:40
      */
-    Result addPostViews(Long postId);
+    Result addPostViews(Post post);
 
     /**
      * 功能描述: 查询帖子有效积分
@@ -84,4 +84,13 @@ public interface IPostService extends IService<Post> {
      * 时间: 2023/5/12 19:24
      */
     Result<IPage<PostExt>> qryDynamicPage(PostPageReq req);
+
+    /**
+     * 功能描述: 查询推荐帖子
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/5/12 23:22
+     */
+    Result qryRecommendPost(PostPageReq req);
 }

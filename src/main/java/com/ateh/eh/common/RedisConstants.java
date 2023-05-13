@@ -71,4 +71,19 @@ public class RedisConstants {
      */
     public static final String POST_HELP = "POST_HELP:";
 
+    /**
+     * 协同推荐中每个loves值
+     */
+    public static final String RECOMMEND = "RECOMMEND:";
+
+    /**
+     * 协同推荐的帖子
+     */
+    public static final String RECOMMEND_POST = "RECOMMEND:POST:";
+
+    /**
+     * 已经推荐过的recommend的ID
+     */
+    public static final String RECOMMENDED_POST = "RECOMMENDED:POST:";
+
 }

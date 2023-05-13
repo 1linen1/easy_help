@@ -70,10 +70,10 @@ public class PostController {
         return postService.qryPostPage(req);
     }
 
-    @GetMapping("/addViews/{postId}")
+    @PostMapping("/addViews")
     @ApiOperation("增加浏览量")
-    public Result addPostViews(@PathVariable("postId") Long postId) {
-        return postService.addPostViews(postId);
+    public Result addPostViews(@RequestBody Post post) {
+        return postService.addPostViews(post);
     }
 
 
@@ -110,5 +110,10 @@ public class PostController {
         return postService.qryDynamicPage(req);
     }
 
+    @PostMapping("/qryRecommendPost")
+    @ApiOperation("查询推荐帖子")
+    public Result qryRecommendPost(@RequestBody PostPageReq req) {
+        return postService.qryRecommendPost(req);
+    }
 
 }
