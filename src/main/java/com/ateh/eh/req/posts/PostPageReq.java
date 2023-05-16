@@ -36,4 +36,28 @@ public class PostPageReq extends BasePageReq {
     @ApiModelProperty("帖子内容/用户名称")
     private String content;
 
+    @ApiModelProperty("帖子id")
+    private Long postId;
+
+    @ApiModelProperty("帖子类型")
+    private String type;
+
+    @ApiModelProperty("状态")
+    private String status;
+
+    @ApiModelProperty("收藏")
+    private String collects;
+
+    @ApiModelProperty("浏览")
+    private String views;
+
+    @ApiModelProperty("用户附加积分")
+    private String scores;
+
+    @ApiModelProperty("是否已解决")
+    private String resolved;
+
+    @ApiModelProperty("用户名称")
+    private String nickname;
+
 }

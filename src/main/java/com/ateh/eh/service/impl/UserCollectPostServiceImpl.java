@@ -3,16 +3,22 @@ package com.ateh.eh.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.ateh.eh.common.CommonConstants;
 import com.ateh.eh.common.RedisConstants;
+import com.ateh.eh.entity.Post;
 import com.ateh.eh.entity.Recommend;
 import com.ateh.eh.entity.UserCollectPost;
 import com.ateh.eh.entity.UserHistoryPost;
 import com.ateh.eh.entity.ext.PostExt;
+import com.ateh.eh.entity.ext.UserExt;
+import com.ateh.eh.mapper.PostMapper;
 import com.ateh.eh.mapper.RecommendMapper;
 import com.ateh.eh.mapper.UserCollectPostMapper;
 import com.ateh.eh.mapper.UserHistoryPostMapper;
+import com.ateh.eh.mapper.UserMapper;
 import com.ateh.eh.req.history.UserHistoryPostPageReq;
+import com.ateh.eh.req.user.MyRankReq;
 import com.ateh.eh.service.IUserCollectPostService;
 import com.ateh.eh.service.IUserHistoryPostService;
+import com.ateh.eh.service.IUserService;
 import com.ateh.eh.utils.Result;
 import com.ateh.eh.utils.UserHolder;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -52,6 +58,12 @@ public class UserCollectPostServiceImpl extends ServiceImpl<UserCollectPostMappe
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+    @Autowired
+    private IUserService userService;
+
+    @Autowired
+    private PostMapper postMapper;
+
     @Override
     public Result addCollect(UserCollectPost collectPost) {
         Long postId = collectPost.getPostId();
@@ -66,6 +78,15 @@ public class UserCollectPostServiceImpl extends ServiceImpl<UserCollectPostMappe
             collectPostMapper.updateById(collectPost);
             redisTemplate.delete(RedisConstants.POST_COLLECT + collectPost.getUserId() + ":" + postId);
         }
+
+        Post post = postMapper.selectById(postId);
+        Long postUserId = post.getUserId();
+        MyRankReq rankReq = new MyRankReq();
+        rankReq.setOrderType("Total");
+        rankReq.setUserId(postUserId);
+        Result<UserExt> myRank = userService.getMyRank(rankReq);
+        UserExt data = myRank.getData();
+        float extNum = (float) (1.0 / data.getRank());
 
         Recommend recommend = new Recommend();
         Long userId = UserHolder.getLoginUser().getUserId();
@@ -83,7 +104,7 @@ public class UserCollectPostServiceImpl extends ServiceImpl<UserCollectPostMappe
                 recommend.setPostId(postId);
                 recommend.setUserId(userId);
                 if (StrUtil.isEmpty(value)) {
-                    recommend.setLoves(2);
+                    recommend.setLoves(2 + extNum);
                 } else {
                     recommend.setLoves(0);
                 }
@@ -92,7 +113,7 @@ public class UserCollectPostServiceImpl extends ServiceImpl<UserCollectPostMappe
                 // 说明只是Redis中没有数据，更新数据库数据，并存入Redis中
                 float loveNum = recommend.getLoves();
                 if (StrUtil.isEmpty(value)) {
-                    recommend.setLoves(loveNum + 2);
+                    recommend.setLoves(loveNum + 2 + extNum);
                 } else {
                     recommend.setLoves(loveNum - 2);
                 }
@@ -106,7 +127,7 @@ public class UserCollectPostServiceImpl extends ServiceImpl<UserCollectPostMappe
             float loveNum = Float.parseFloat((String) loves);
             recommend.setRecommendId(id);
             if (StrUtil.isEmpty(value)) {
-                recommend.setLoves(loveNum + 2);
+                recommend.setLoves(loveNum + 2 + extNum);
             } else {
                 recommend.setLoves(loveNum - 2);
             }

@@ -77,4 +77,13 @@ public interface PostMapper extends BaseMapper<Post> {
      * 时间: 2023/5/13 16:07
      */
     List<PostExt> selectByRecommendId(@Param("ids") List<Long> ids);
+
+    /**
+     * 功能描述: 获取所有帖子
+     *
+     * @return com.baomidou.mybatisplus.core.metadata.IPage<com.ateh.eh.entity.ext.PostExt>
+     * @author huang.yijie
+     * 时间: 2023/5/15 18:36
+     */
+    IPage<PostExt> getAllPost(@Param("page") Page<PostExt> toPage, @Param("req") PostPageReq req);
 }

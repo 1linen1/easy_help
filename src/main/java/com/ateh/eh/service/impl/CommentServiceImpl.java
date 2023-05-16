@@ -6,15 +6,20 @@ import com.ateh.eh.common.CommonConstants;
 import com.ateh.eh.common.RedisConstants;
 import com.ateh.eh.entity.Comment;
 import com.ateh.eh.entity.Recommend;
+import com.ateh.eh.entity.User;
 import com.ateh.eh.entity.UserHelpPost;
 import com.ateh.eh.entity.ext.CommentExt;
+import com.ateh.eh.entity.ext.UserExt;
 import com.ateh.eh.mapper.CommentMapper;
 import com.ateh.eh.mapper.RecommendMapper;
 import com.ateh.eh.mapper.UserHelpPostMapper;
+import com.ateh.eh.mapper.UserMapper;
 import com.ateh.eh.req.comment.AddCommentReq;
 import com.ateh.eh.req.comment.CommentPageReq;
 import com.ateh.eh.req.comment.DeleteCommentReq;
+import com.ateh.eh.req.user.MyRankReq;
 import com.ateh.eh.service.ICommentService;
+import com.ateh.eh.service.IUserService;
 import com.ateh.eh.utils.Result;
 import com.ateh.eh.utils.UserHolder;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -54,6 +59,12 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     private RecommendMapper recommendMapper;
 
     @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private IUserService userService;
+
+    @Autowired
     private StringRedisTemplate redisTemplate;
 
     @Override
@@ -87,9 +98,16 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             redisTemplate.opsForValue().set(RedisConstants.POST_HELP + req.getUserId() + ":" + postId, String.valueOf(++num));
         }
 
+        MyRankReq rankReq = new MyRankReq();
+        rankReq.setOrderType("Total");
+        rankReq.setUserId(req.getPostUserId());
+        Result<UserExt> myRank = userService.getMyRank(rankReq);
+        UserExt data = myRank.getData();
+        float extNum = (float) (1.0 / data.getRank());
+
         // 协同推荐使用
         if (!Objects.equals(req.getPostUserId(), userId)) {
-            recommendOperation(userId, postId, 1);
+            recommendOperation(userId, postId, 1 + extNum);
         }
 
         return Result.success("评论成功！");
@@ -189,5 +207,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         recommendOperation(userId, req.getPostId(), -1);
 
         return Result.success("删除成功!");
+    }
+
+    @Override
+    public Result getCommentById(Long commentId) {
+        return Result.success(commentMapper.selectById(commentId));
     }
 }

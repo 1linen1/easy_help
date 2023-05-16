@@ -15,7 +15,9 @@ import com.ateh.eh.mapper.RecommendMapper;
 import com.ateh.eh.mapper.UserMapper;
 import com.ateh.eh.req.follows.FollowsPageReq;
 import com.ateh.eh.req.posts.PostPageReq;
+import com.ateh.eh.req.user.MyRankReq;
 import com.ateh.eh.service.IPostService;
+import com.ateh.eh.service.IUserService;
 import com.ateh.eh.utils.EmailTask;
 import com.ateh.eh.utils.Result;
 import com.ateh.eh.utils.ScoresUtil;
@@ -58,6 +60,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements IP
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private IUserService userService;
 
     @Autowired
     private FollowsMapper followsMapper;
@@ -114,13 +119,20 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements IP
 
         // 协同推荐
         if (!Objects.equals(post.getUserId(), userId)) {
-            recommendOperation(postId, userId);
+            MyRankReq rankReq = new MyRankReq();
+            rankReq.setOrderType("Total");
+            rankReq.setUserId(post.getUserId());
+            Result<UserExt> myRank = userService.getMyRank(rankReq);
+            UserExt data = myRank.getData();
+            float extNum = (float) (0.5 / data.getRank());
+
+            recommendOperation(postId, userId, 0.5F + extNum);
         }
 
         return Result.success("");
     }
 
-    private void recommendOperation(Long postId, Long userId) {
+    private void recommendOperation(Long postId, Long userId, float num) {
         Recommend recommend = new Recommend();
         Object loves = redisTemplate.opsForHash().get(RedisConstants.RECOMMEND + userId + ":" + postId, "loves");
         Object recommendId = redisTemplate.opsForHash().get(RedisConstants.RECOMMEND + userId + ":" + postId, "recommend_id");
@@ -140,7 +152,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements IP
             } else {
                 // 说明只是Redis中没有数据，更新数据库数据，并存入Redis中
                 float loveNum = recommend.getLoves();
-                recommend.setLoves(loveNum + 0.5F);
+                recommend.setLoves(loveNum + num);
                 recommend.setRecommendId(result.getRecommendId());
                 recommendMapper.updateById(recommend);
             }
@@ -149,7 +161,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements IP
             // 说明缓存中有值，直接使用缓存中保存的recommendId和loves，更新数据库与缓存就行
             Long id = Long.valueOf((String) recommendId);
             recommend.setRecommendId(id);
-            recommend.setLoves(Float.parseFloat((String) loves) + 0.5F);
+            recommend.setLoves(Float.parseFloat((String) loves) + num);
             recommendMapper.updateById(recommend);
         }
         redisTemplate.opsForHash().put(RedisConstants.RECOMMEND + userId + ":" + postId, "loves", String.valueOf(recommend.getLoves()));
@@ -231,13 +243,18 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements IP
         return Result.success(collects);
     }
 
-//    public static void main(String[] args) {
-//        String url = "jdbc:mysql://127.0.0.1:3306/easy_help";
-//        int doubleIndex = url.lastIndexOf("//");
-//        int semiIndex = url.lastIndexOf(":");
-//        int singleIndex = url.lastIndexOf("/");
-//        String host = url.substring(doubleIndex + 2, semiIndex);
-//        String port = url.substring(semiIndex + 1, singleIndex);
-//        System.out.println(host + "   " + port);
-//    }
+    @Override
+    public Result updatePost(Post post) {
+        postMapper.updateById(post);
+        if (CommonConstants.STATUS_VALID.equals(post.getStatus())) {
+            return Result.success("恢复成功!");
+        } else {
+            return Result.success("删除成功!");
+        }
+    }
+
+    @Override
+    public Result getAllPost(PostPageReq req) {
+        return Result.success(postMapper.getAllPost(req.toPage(), req));
+    }
 }

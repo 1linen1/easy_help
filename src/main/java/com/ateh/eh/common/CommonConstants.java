@@ -37,6 +37,26 @@ public class CommonConstants {
     public static final String POST_UNRESOLVED = "00U";
 
     /**
+     * 举报成功状态 00B
+     */
+    public static final String WARNING_SUCCESS = "00B";
+
+    /**
+     * 举报失败状态 00C
+     */
+    public static final String WARNING_FAIL = "00C";
+
+    /**
+     * 申诉成功状态 00D
+     */
+    public static final String APPEAL_SUCCESS = "00D";
+
+    /**
+     * 申诉失败状态 00E
+     */
+    public static final String APPEAL_FAIL = "00E";
+
+    /**
      * 普通用户
      */
     public static final String NORMAL_USER_2 = "2";

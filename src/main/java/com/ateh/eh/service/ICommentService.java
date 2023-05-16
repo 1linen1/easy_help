@@ -49,4 +49,13 @@ public interface ICommentService extends IService<Comment> {
      * 时间: 2023/4/24 15:34
      */
     Result deleteComment(DeleteCommentReq req);
+
+    /**
+     * 功能描述: 获取评论信息
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/5/16 19:06
+     */
+    Result getCommentById(Long commentId);
 }

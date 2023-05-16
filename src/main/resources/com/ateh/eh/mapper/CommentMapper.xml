@@ -12,7 +12,12 @@
         SELECT <include refid="Base_Colum_C"/>, u.avatar, u.nickname
         FROM comment c
             LEFT JOIN user u ON c.user_id = u.user_id
-        WHERE c.post_id = #{req.postId} AND c.status = '00A'
+        <where>
+            c.post_id = #{req.postId} AND c.status = '00A'
+            <if test="req.userId != null and req.userId != ''">
+                AND c.user_id = #{req.userId}
+            </if>
+        </where>
         ORDER BY c.create_date DESC
     </select>
 

@@ -3,7 +3,10 @@ package com.ateh.eh.mapper;
 import com.ateh.eh.entity.Post;
 import com.ateh.eh.entity.User;
 import com.ateh.eh.entity.ext.UserExt;
+import com.ateh.eh.req.user.UserPageReq;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -69,4 +72,13 @@ public interface UserMapper extends BaseMapper<User> {
      * 时间: 2023/5/12 15:32
      */
     UserExt getUserInfo(@Param("userId") Long userId);
+
+    /**
+     * 功能描述: 查询所有用户
+     *
+     * @return java.util.List<com.ateh.eh.entity.ext.UserExt>
+     * @author huang.yijie
+     * 时间: 2023/5/14 23:53
+     */
+    IPage<UserExt> getAllUserPage(@Param("page") Page<UserExt> toPage, @Param("req") UserPageReq req);
 }

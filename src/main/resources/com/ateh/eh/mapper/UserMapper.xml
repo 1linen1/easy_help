@@ -60,4 +60,39 @@
         WHERE u.user_id = #{userId} AND u.status = '00A' AND t.status = '00A'
     </select>
 
+    <select id="getAllUserPage" resultType="com.ateh.eh.entity.ext.UserExt">
+        SELECT <include refid="Base_Colum_U"></include>, t.name as titleName
+        FROM user u
+            LEFT JOIN title t ON u.title = t.title_id
+        <where>
+            t.status = '00A'
+            <if test="req.nickname != null and req.nickname != ''">
+                AND u.nickname LIKE CONCAT('%', #{req.nickname}, '%')
+            </if>
+            <if test="req.email != null and req.email != ''">
+                AND u.email LIKE CONCAT('%', #{req.email}, '%')
+            </if>
+            <if test="req.status != null and req.status != ''">
+                AND u.status = #{req.status}
+            </if>
+        </where>
+        <choose>
+            <when test="req.scoresTotal != null and req.scoresTotal == 'DESC'">
+                ORDER BY u.scores_total DESC
+            </when>
+            <when test="req.scoresTotal != null and req.scoresTotal == 'ASC'">
+                ORDER BY u.scores_total ASC
+            </when>
+            <when test="req.scoresCurrent != null and req.scoresCurrent == 'DESC'">
+                ORDER BY u.scores_current DESC
+            </when>
+            <when test="req.scoresCurrent != null and req.scoresCurrent == 'ASC'">
+                ORDER BY u.scores_current ASC
+            </when>
+            <otherwise>
+                ORDER BY u.create_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
 </mapper>

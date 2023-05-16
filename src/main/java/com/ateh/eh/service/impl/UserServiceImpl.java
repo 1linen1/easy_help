@@ -17,6 +17,7 @@ import com.ateh.eh.req.posts.UpdateUserScoresReq;
 import com.ateh.eh.req.user.MyRankReq;
 import com.ateh.eh.req.user.RankPageReq;
 import com.ateh.eh.req.user.UpdateNicknameReq;
+import com.ateh.eh.req.user.UserPageReq;
 import com.ateh.eh.utils.EmailTask;
 import com.ateh.eh.entity.User;
 import com.ateh.eh.mapper.UserMapper;
@@ -29,6 +30,7 @@ import com.ateh.eh.utils.Result;
 import com.ateh.eh.utils.UserHolder;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.swagger.annotations.Scope;
@@ -201,7 +203,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public Result getMyRank(MyRankReq req) {
+    public Result<UserExt> getMyRank(MyRankReq req) {
         String orderType = req.getOrderType();
 
         LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
@@ -295,5 +297,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             userMapper.updateById(user);
         });
         return Result.success("分配积分成功!");
+    }
+
+    @Override
+    public Result getAllUserPage(UserPageReq req) {
+        IPage<UserExt> userList = userMapper.getAllUserPage(req.toPage(), req);
+        return Result.success(userList);
+    }
+
+    @Override
+    public Result updateUser(User user) {
+        userMapper.updateById(user);
+        if (CommonConstants.STATUS_VALID.equals(user.getStatus())) {
+            return Result.success("恢复成功!");
+        } else {
+            return Result.success("删除成功!");
+        }
     }
 }

@@ -1,6 +1,9 @@
 package com.ateh.eh.controller;
 
 import com.ateh.eh.entity.Warning;
+import com.ateh.eh.req.warning.HandleAppealReq;
+import com.ateh.eh.req.warning.HandleWarningReq;
+import com.ateh.eh.req.warning.WarningPageReq;
 import com.ateh.eh.service.IWarningService;
 import com.ateh.eh.utils.Result;
 import io.swagger.annotations.Api;
@@ -42,8 +45,26 @@ public class WarningController {
 
     @PostMapping("/handleWarning")
     @ApiOperation("处理举报")
-    public Result handleWarning(@RequestBody Warning warning) {
-        return warningService.handleWarning(warning);
+    public Result handleWarning(@RequestBody HandleWarningReq req) {
+        return warningService.handleWarning(req);
+    }
+
+    @PostMapping("/updateWarning")
+    @ApiOperation("更新举报状态")
+    public Result updateWarning(@RequestBody Warning warning) {
+        return warningService.updateWarning(warning);
+    }
+
+    @PostMapping("/qryAllWarning")
+    @ApiOperation("查询所有举报")
+    public Result qryAllWarning(@RequestBody WarningPageReq req) {
+        return warningService.qryAllWarning(req);
+    }
+
+    @PostMapping("/handleAppeal")
+    @ApiOperation("处理申诉")
+    public Result handleAppeal(@RequestBody HandleAppealReq req) {
+        return warningService.handleAppeal(req);
     }
 
 }

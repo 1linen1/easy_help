@@ -1,11 +1,13 @@
 package com.ateh.eh.controller;
 
 import com.ateh.eh.entity.Post;
+import com.ateh.eh.entity.User;
 import com.ateh.eh.entity.ext.UserExt;
 import com.ateh.eh.req.posts.UpdateUserScoresReq;
 import com.ateh.eh.req.user.MyRankReq;
 import com.ateh.eh.req.user.RankPageReq;
 import com.ateh.eh.req.user.UpdateNicknameReq;
+import com.ateh.eh.req.user.UserPageReq;
 import com.ateh.eh.req.user.UserRegisterReq;
 import com.ateh.eh.req.user.VerificationCodeReq;
 import com.ateh.eh.req.user.UserLoginReq;
@@ -83,7 +85,7 @@ public class UserController {
 
     @PostMapping("/getMyRank")
     @ApiOperation("获取当前用户排名")
-    public Result getMyRank(@RequestBody MyRankReq req) {
+    public Result<UserExt> getMyRank(@RequestBody MyRankReq req) {
         return userService.getMyRank(req);
     }
 
@@ -110,4 +112,17 @@ public class UserController {
     public Result updateUserScores(@RequestBody UpdateUserScoresReq req) {
         return userService.updateUserScores(req);
     }
+
+    @PostMapping("/getAllUserPage")
+    @ApiOperation("分页获取所有用户信息")
+    public Result getAllUserPage(@RequestBody UserPageReq req) {
+        return userService.getAllUserPage(req);
+    }
+
+    @PostMapping("/updateUser")
+    @ApiOperation("更新用户状态")
+    public Result updateUser(@RequestBody User user) {
+        return userService.updateUser(user);
+    }
+
 }

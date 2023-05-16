@@ -9,6 +9,7 @@ import com.ateh.eh.req.user.MyRankReq;
 import com.ateh.eh.req.user.RankPageReq;
 import com.ateh.eh.req.user.UpdateNicknameReq;
 import com.ateh.eh.req.user.UserLoginReq;
+import com.ateh.eh.req.user.UserPageReq;
 import com.ateh.eh.req.user.UserRegisterReq;
 import com.ateh.eh.req.user.VerificationCodeReq;
 import com.ateh.eh.utils.Result;
@@ -92,7 +93,7 @@ public interface IUserService extends IService<User>{
      * @author huang.yijie
      * 时间: 2023/4/18 16:18
      */
-    Result getMyRank(MyRankReq req);
+    Result<UserExt> getMyRank(MyRankReq req);
 
     /**
      * 功能描述: 获取当前用户信息
@@ -129,4 +130,22 @@ public interface IUserService extends IService<User>{
      * 时间: 2023/5/11 15:34
      */
     Result updateUserScores(UpdateUserScoresReq req);
+
+    /**
+     * 功能描述: 分页获取所有用户信息
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/5/14 23:52
+     */
+    Result getAllUserPage(UserPageReq req);
+
+    /**
+     * 功能描述: 更新用户状态
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/5/15 13:00
+     */
+    Result updateUser(User user);
 }

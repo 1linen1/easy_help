@@ -28,4 +28,7 @@ public class CommentPageReq extends BasePageReq {
     @ApiModelProperty("帖子ID")
     private Long postId;
 
+    @ApiModelProperty("用户ID")
+    private Long userId;
+
 }

@@ -56,4 +56,10 @@ public class CommentController {
         return commentService.qryPostCommentPage(req);
     }
 
+    @GetMapping("/getCommentById/{commentId}")
+    @ApiOperation("获取评论信息")
+    public Result getCommentById(@PathVariable("commentId") Long commentId) {
+        return commentService.getCommentById(commentId);
+    }
+
 }

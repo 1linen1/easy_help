@@ -93,4 +93,22 @@ public interface IPostService extends IService<Post> {
      * 时间: 2023/5/12 23:22
      */
     Result qryRecommendPost(PostPageReq req);
+
+    /**
+     * 功能描述: 更新帖子状态
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/5/15 13:03
+     */
+    Result updatePost(Post post);
+
+    /**
+     * 功能描述: 查询所有帖子
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/5/15 18:34
+     */
+    Result getAllPost(PostPageReq req);
 }

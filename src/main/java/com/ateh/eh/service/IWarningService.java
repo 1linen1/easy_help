@@ -1,6 +1,9 @@
 package com.ateh.eh.service;
 
 import com.ateh.eh.entity.Warning;
+import com.ateh.eh.req.warning.HandleAppealReq;
+import com.ateh.eh.req.warning.HandleWarningReq;
+import com.ateh.eh.req.warning.WarningPageReq;
 import com.ateh.eh.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -36,5 +39,32 @@ public interface IWarningService extends IService<Warning> {
      * @author huang.yijie
      * 时间: 2023/5/1 21:23
      */
-    Result handleWarning(Warning warning);
+    Result handleWarning(HandleWarningReq req);
+
+    /**
+     * 功能描述: 分页查询全部举报信息
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/5/15 23:22
+     */
+    Result qryAllWarning(WarningPageReq req);
+
+    /**
+     * 功能描述: 更新举报信息
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/5/16 18:20
+     */
+    Result updateWarning(Warning warning);
+
+    /**
+     * 功能描述: 处理申诉帖子
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/5/16 21:53
+     */
+    Result handleAppeal(HandleAppealReq req);
 }

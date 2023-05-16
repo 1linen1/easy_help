@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ateh.eh.mapper.WarningMapper">
+
+    <sql id="Base_Colum_W">
+        w.warning_id, w.positive_user_id, w.passive_user_id, comment_post_id, w.type, w.status, w.result, w.scores, w.create_date, w.create_staff, w.update_date, w.update_staff
+    </sql>
+
+    <select id="qryAllWarning" resultType="com.ateh.eh.entity.ext.WarningExt">
+        SELECT <include refid="Base_Colum_W"/>, u1.avatar as positiveAvatar, u1.nickname as positiveNickname, u2.avatar as passiveAvatar, u2.nickname as passiveNickname, u2.status as passiveUserStatus
+        FROM warning w
+            LEFT JOIN user u1 ON w.positive_user_id = u1.user_id
+            LEFT JOIN user u2 ON w.passive_user_id = u2.user_id
+        <where>
+            1 = 1
+            <if test="req.result != null and req.result != ''">
+                AND w.result = CONCAT('%', #{req.result}, '%')
+            </if>
+            <if test="req.status != null and req.status != ''">
+                AND w.status = #{req.status}
+            </if>
+            <if test="req.type != null and req.type != ''">
+                AND w.type = #{req.type}
+            </if>
+        </where>
+        <choose>
+            <when test="req.sortedField != null and req.sortedField == 'createDate' and req.sortedType != null and req.sortedType == 'DESC'">
+                ORDER BY w.create_date DESC
+            </when>
+            <when test="req.sortedField != null and req.sortedField == 'createDate' and req.sortedType != null and req.sortedType == 'ASC'">
+                ORDER BY w.create_date ASC
+            </when>
+            <when test="req.sortedField != null and req.sortedField == 'updateDate' and req.sortedType != null and req.sortedType == 'DESC'">
+                ORDER BY w.update_date DESC
+            </when>
+            <when test="req.sortedField != null and req.sortedField == 'updateDate' and req.sortedType != null and req.sortedType == 'ASC'">
+                ORDER BY w.update_date ASC
+            </when>
+            <otherwise>
+                ORDER BY w.update_date ASC, w.create_date ASC
+            </otherwise>
+        </choose>
+    </select>
+
+</mapper>

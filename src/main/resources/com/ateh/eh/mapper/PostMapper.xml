@@ -100,4 +100,51 @@
                 #{id}
             </foreach>
     </select>
+
+    <select id="getAllPost" resultType="com.ateh.eh.entity.ext.PostExt">
+        SELECT <include refid="Base_Colum_P"/>, u.user_id, u.avatar, u.nickname
+        FROM post p
+            LEFT JOIN user u ON p.user_id = u.user_id
+        <where>
+            1 = 1
+            <if test="req.content != null and req.content != ''">
+                AND p.content LIKE CONCAT('%', #{req.content}, '%')
+            </if>
+            <if test="req.nickname != null and req.nickname != ''">
+                AND u.nickname LIKE CONCAT('%', #{req.nickname}, '%')
+            </if>
+            <if test="req.type != null and req.type != ''">
+                AND p.type = #{req.type}
+            </if>
+            <if test="req.status != null and req.status != ''">
+                AND p.status = #{req.status}
+            </if>
+            <if test="req.resolved != null and req.resolved != ''">
+                AND p.resolved = #{req.resolved}
+            </if>
+        </where>
+        <choose>
+            <when test="req.collects != null and req.collects == 'DESC'">
+                ORDER BY p.collects DESC
+            </when>
+            <when test="req.collects != null and req.collects == 'ASC'">
+                ORDER BY p.collects ASC
+            </when>
+            <when test="req.scores != null and req.scores == 'DESC'">
+                ORDER BY p.scores DESC
+            </when>
+            <when test="req.scores != null and req.scores == 'ASC'">
+                ORDER BY p.scores ASC
+            </when>
+            <when test="req.views != null and req.views == 'DESC'">
+                ORDER BY p.views DESC
+            </when>
+            <when test="req.views != null and req.views == 'ASC'">
+                ORDER BY p.views ASC
+            </when>
+            <otherwise>
+                ORDER BY p.create_date DESC
+            </otherwise>
+        </choose>
+    </select>
 </mapper>

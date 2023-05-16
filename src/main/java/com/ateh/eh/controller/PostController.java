@@ -116,4 +116,16 @@ public class PostController {
         return postService.qryRecommendPost(req);
     }
 
+    @PostMapping("/updatePost")
+    @ApiOperation("更新帖子状态")
+    public Result updatePost(@RequestBody Post post) {
+        return postService.updatePost(post);
+    }
+
+    @PostMapping("/getAllPost")
+    @ApiOperation("获取所有帖子信息")
+    public Result getAllPost(@RequestBody PostPageReq req) {
+        return postService.getAllPost(req);
+    }
+
 }

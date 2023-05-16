@@ -45,4 +45,7 @@ public class Warning extends BaseEntity {
 
     @ApiModelProperty("举报结果")
     private String result;
+
+    @ApiModelProperty("申诉使用")
+    private Long scores;
 }
