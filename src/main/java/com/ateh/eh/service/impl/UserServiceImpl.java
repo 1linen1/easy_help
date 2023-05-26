@@ -87,13 +87,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
         if (Objects.isNull(authentication)) {
-            throw new RuntimeException("用户名或密码错误！");
+            throw new RuntimeException("账号或密码错误!");
         }
 
         // 我们直接实现的 UserDetailServiceImpl 类的返回值 LoginUser类 就是在存储在这里
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
 
         UserExt realUser = loginUser.getUser();
+
+        if ("1".equals(req.getRole()) && !"1".equals(realUser.getRole())) {
+            return Result.error("该账号非管理员账号!");
+        }
 
         // 生成token
         String token = JwtHelper.createToken(realUser.getUserId(), realUser.getUsername());
@@ -124,6 +128,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public Result getVerificationCode(VerificationCodeReq loginCodeReq) {
         String toEmail = loginCodeReq.getEmail();
+        if (userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getEmail, toEmail)) > 0) {
+            return Result.error("邮箱已被注册!");
+        }
         if (!Validator.isEmail(toEmail)) {
             return Result.error("邮箱格式错误!");
         }
@@ -143,7 +150,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (!StrUtil.equals(req.getCode(), redisTemplate.opsForValue().get(RedisConstants.EMAIL_VERIFICATION_CODE + email))) {
             return Result.error("验证码错误!");
         }
-        if (!Objects.isNull(userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getEmail, email)))) {
+        if (userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getEmail, email)) > 0) {
             return Result.error("邮箱已被注册!");
         }
         User user = new User();
@@ -195,7 +202,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         } else {
             return Result.error("分类类型未指定!");
         }
-        lqw.orderBy(true, false, User::getCreateDate);
+        lqw.orderBy(true, true, User::getUpdateDate);
+        lqw.orderBy(true, true, User::getCreateDate);
         lqw.eq(User::getStatus, CommonConstants.STATUS_VALID);
         Page<User> page = new Page<>(req.getPageNum(), req.getPageSize());
         Page<User> userPage = userMapper.selectPage(page, lqw);
@@ -311,6 +319,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (CommonConstants.STATUS_VALID.equals(user.getStatus())) {
             return Result.success("恢复成功!");
         } else {
+            redisTemplate.delete(RedisConstants.LOGIN_KEY + user.getUserId());
             return Result.success("删除成功!");
         }
     }

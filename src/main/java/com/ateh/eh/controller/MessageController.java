@@ -1,5 +1,7 @@
 package com.ateh.eh.controller;
 
+import com.ateh.eh.common.CommonConstants;
+import com.ateh.eh.entity.Message;
 import com.ateh.eh.mapper.MessageMapper;
 import com.ateh.eh.req.message.MessagePageReq;
 import com.ateh.eh.service.IMessageService;
@@ -7,6 +9,8 @@ import com.ateh.eh.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,4 +47,14 @@ public class MessageController {
         return messageService.qryMessagePage(req);
     }
 
+
+    @GetMapping("/deleteMsg/{msgId}")
+    @ApiOperation("删除消息")
+    public Result deleteMsg(@PathVariable("msgId") Long msgId) {
+        Message message = new Message();
+        message.setStatus(CommonConstants.STATUS_INVALID);
+        message.setMessageId(msgId);
+        messageMapper.updateById(message);
+        return Result.success("删除成功!");
+    }
 }

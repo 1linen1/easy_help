@@ -102,8 +102,11 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         rankReq.setOrderType("Total");
         rankReq.setUserId(req.getPostUserId());
         Result<UserExt> myRank = userService.getMyRank(rankReq);
+        rankReq.setOrderType("Current");
+        Result<UserExt> myRank2 = userService.getMyRank(rankReq);
         UserExt data = myRank.getData();
-        float extNum = (float) (1.0 / data.getRank());
+        UserExt data2 = myRank2.getData();
+        float extNum = (float) (0.7 / data.getRank() + 0.3 / data2.getRank());
 
         // 协同推荐使用
         if (!Objects.equals(req.getPostUserId(), userId)) {

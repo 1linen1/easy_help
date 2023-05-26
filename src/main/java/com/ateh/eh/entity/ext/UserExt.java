@@ -28,6 +28,15 @@ import java.util.Date;
 @ApiModel("用户拓展类")
 public class UserExt extends User {
 
+    @ApiModelProperty("粉丝数")
+    private Long follows;
+
+    @ApiModelProperty("关注数")
+    private Long concerns;
+
+    @ApiModelProperty("动态数")
+    private Long dynamics;
+
     @ApiModelProperty("称号")
     private String titleName;
 

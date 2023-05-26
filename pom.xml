@@ -22,12 +22,14 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- mahout依赖 -->
+        <!-- https://mvnrepository.com/artifact/org.apache.mahout/mahout -->
         <dependency>
             <groupId>org.apache.mahout</groupId>
             <artifactId>mahout</artifactId>
             <version>0.11.1</version>
+            <type>pom</type>
         </dependency>
+
         <dependency>
             <groupId>org.apache.mahout</groupId>
             <artifactId>mahout-examples</artifactId>

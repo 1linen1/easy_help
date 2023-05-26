@@ -45,20 +45,11 @@ public class Post extends BaseEntity {
     @ApiModelProperty("帖子类型（0求助贴，1动态贴）")
     private String type;
 
-    @ApiModelProperty("帖子标签")
-    private String tag;
-
-    @ApiModelProperty("点赞数")
-    private Long loves;
-
     @ApiModelProperty("收藏数")
     private Long collects;
 
     @ApiModelProperty("浏览量")
     private Long views;
-
-    @ApiModelProperty("评论数")
-    private Long comments;
 
     @ApiModelProperty("用户附加的积分")
     private Long scores;

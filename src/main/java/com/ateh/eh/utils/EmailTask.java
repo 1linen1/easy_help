@@ -105,6 +105,9 @@ public class EmailTask implements Serializable {
 
             List<RecommendedItem> recommendList = recommender.recommend(6, 100);
             List<PostExt> posts;
+            System.out.println("==================================================================================");
+            System.out.println(recommendList);
+            System.out.println("==================================================================================");
             if (recommendList.size() > 0) {
                 List<Long> ids = recommendList.stream().map(RecommendedItem::getItemID).collect(Collectors.toList());
                 posts = postMapper.selectByRecommendId(ids);

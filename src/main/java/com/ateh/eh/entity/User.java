@@ -60,18 +60,6 @@ public class User extends BaseEntity {
     @ApiModelProperty("称号")
     private Long title;
 
-    @ApiModelProperty("粉丝数")
-    private Long follows;
-
-    @ApiModelProperty("关注数")
-    private Long concerns;
-
-    @ApiModelProperty("动态数")
-    private Long dynamics;
-
-    @ApiModelProperty("是否被锁")
-    private String locked;
-
     @ApiModelProperty("最近一次登录时间")
     private Date lastLoginDate;
 

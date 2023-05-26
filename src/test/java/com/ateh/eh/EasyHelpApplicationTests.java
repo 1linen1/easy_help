@@ -23,7 +23,6 @@ class EasyHelpApplicationTests {
         user.setEmail("2696839754@qq.com");
         user.setRole("1");
         user.setStatus("00A");
-        user.setLocked("0");
         System.out.println(userMapper.insert(user));
 
     }

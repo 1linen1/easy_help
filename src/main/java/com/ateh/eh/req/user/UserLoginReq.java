@@ -28,4 +28,7 @@ public class UserLoginReq {
     @ApiModelProperty("密码")
     private String password;
 
+    @ApiModelProperty("角色（1管理员，2普通用户）")
+    private String role;
+
 }

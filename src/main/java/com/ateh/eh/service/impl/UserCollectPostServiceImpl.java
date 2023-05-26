@@ -85,8 +85,11 @@ public class UserCollectPostServiceImpl extends ServiceImpl<UserCollectPostMappe
         rankReq.setOrderType("Total");
         rankReq.setUserId(postUserId);
         Result<UserExt> myRank = userService.getMyRank(rankReq);
+        rankReq.setOrderType("Current");
+        Result<UserExt> myRank2 = userService.getMyRank(rankReq);
         UserExt data = myRank.getData();
-        float extNum = (float) (1.0 / data.getRank());
+        UserExt data2 = myRank2.getData();
+        float extNum = (float) (0.7 / data.getRank() + 0.3 / data2.getRank());
 
         Recommend recommend = new Recommend();
         Long userId = UserHolder.getLoginUser().getUserId();

@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -78,8 +79,6 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements IP
         Long userId = UserHolder.getLoginUser().getUserId();
         post.setUserId(userId);
         post.setViews(0L);
-        post.setComments(0L);
-        post.setLoves(0L);
         post.setCollects(0L);
         post.setResolved(CommonConstants.POST_UNRESOLVED);
 
@@ -123,8 +122,11 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements IP
             rankReq.setOrderType("Total");
             rankReq.setUserId(post.getUserId());
             Result<UserExt> myRank = userService.getMyRank(rankReq);
+            rankReq.setOrderType("Current");
+            Result<UserExt> myRank2 = userService.getMyRank(rankReq);
             UserExt data = myRank.getData();
-            float extNum = (float) (0.5 / data.getRank());
+            UserExt data2 = myRank2.getData();
+            float extNum = (float) (0.7 / data.getRank() + 0.3 / data2.getRank());
 
             recommendOperation(postId, userId, 0.5F + extNum);
         }
@@ -187,17 +189,20 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements IP
 
     @Override
     public Result<IPage<PostExt>> qryDynamicPage(PostPageReq req) {
+        Long userId = req.getUserId();
         FollowsPageReq followReq = new FollowsPageReq();
         followReq.setPageNum(1);
         followReq.setPageSize(1000);
-        followReq.setUserId(req.getUserId());
+        followReq.setUserId(userId);
         followReq.setType("concerns"); // 查询关注
         IPage<UserExt> userPage = followsMapper.qryConcernsOrFollowsPage(followReq.toPage(), followReq);
 
         List<UserExt> records = userPage.getRecords();
         List<Long> ids = records.stream().map(UserExt::getUserId).collect(Collectors.toList());
 
-        ids.add(req.getUserId());
+        ids = ids.stream().filter(item -> redisTemplate.opsForSet().isMember(RedisConstants.FOLLOWS + userId, String.valueOf(item))).collect(Collectors.toList());
+
+        ids.add(userId);
 
         IPage<PostExt> posts = postMapper.qryDynamicPage(req.toPage(), req, ids);
         return Result.success(posts);

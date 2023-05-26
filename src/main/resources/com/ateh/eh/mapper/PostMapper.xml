@@ -5,7 +5,7 @@
 <mapper namespace="com.ateh.eh.mapper.PostMapper">
 
     <sql id="Base_Colum_P">
-        p.post_id, p.user_id, p.content, p.images, p.type, p.status, p.loves, p.collects, p.views, p.comments, p.resolved, p.scores, p.create_date, p.create_staff, p.update_date, p.update_staff
+        p.post_id, p.user_id, p.content, p.images, p.type, p.status, p.collects, p.views, p.resolved, p.scores, p.create_date, p.create_staff, p.update_date, p.update_staff
     </sql>
 
     <select id="qryPostPage" parameterType="com.ateh.eh.req.posts.PostPageReq" resultType="com.ateh.eh.entity.ext.PostExt">

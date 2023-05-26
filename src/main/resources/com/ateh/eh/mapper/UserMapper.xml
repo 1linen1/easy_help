@@ -5,14 +5,14 @@
 <mapper namespace="com.ateh.eh.mapper.UserMapper">
 
     <sql id="Base_Colum_U">
-        u.user_id, u.username, u.password, u.nickname, u.email, u.avatar, u.role, u.scores_total, u.scores_current, u.title, u.follows, u.concerns, u.dynamics, u.status, u.locked, u.create_date, u.create_staff, u.update_date, u.update_staff
+        u.user_id, u.username, u.password, u.nickname, u.email, u.avatar, u.role, u.scores_total, u.scores_current, u.title, u.status, u.create_date, u.create_staff, u.update_date, u.update_staff
     </sql>
 
     <select id="qryUserByName" resultType="com.ateh.eh.entity.ext.UserExt">
         SELECT <include refid="Base_Colum_U"/>, t.name as titleName
         FROM user u
             LEFT JOIN title t ON u.title = t.title_id
-        WHERE u.username = #{username} AND u.status = '00A' AND t.status = '00A'
+        WHERE u.username = #{username} AND t.status = '00A'
     </select>
 
     <update id="updateScoresCurrent">

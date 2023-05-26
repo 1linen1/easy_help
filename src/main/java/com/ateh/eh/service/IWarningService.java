@@ -67,4 +67,13 @@ public interface IWarningService extends IService<Warning> {
      * 时间: 2023/5/16 21:53
      */
     Result handleAppeal(HandleAppealReq req);
+
+    /**
+     * 功能描述: TODO
+     *
+     * @return com.ateh.eh.utils.Result
+     * @author huang.yijie
+     * 时间: 2023/5/17 15:40
+     */
+    Result qryMyWarning(WarningPageReq req);
 }

@@ -18,6 +18,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Objects;
 
@@ -138,5 +139,10 @@ public class WarningServiceImpl extends ServiceImpl<WarningMapper, Warning> impl
         }
         warningMapper.updateById(warning);
         return Result.success("");
+    }
+
+    @Override
+    public Result qryMyWarning(WarningPageReq req) {
+        return Result.success(warningMapper.qryMyWarning(req.toPage(), req));
     }
 }

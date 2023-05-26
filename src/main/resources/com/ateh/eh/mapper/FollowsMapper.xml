@@ -9,7 +9,7 @@
     </sql>
 
     <sql id="Base_Colum_U">
-        u.user_id, u.username, u.password, u.nickname, u.email, u.avatar, u.role, u.scores_total, u.scores_current, u.title, u.follows, u.concerns, u.dynamics, u.status, u.locked, u.create_date, u.create_staff, u.update_date, u.update_staff
+        u.user_id, u.username, u.password, u.nickname, u.email, u.avatar, u.role, u.scores_total, u.scores_current, u.title, u.status, u.create_date, u.create_staff, u.update_date, u.update_staff
     </sql>
 
     <select id="qryConcernsOrFollowsPage" resultType="com.ateh.eh.entity.ext.UserExt">

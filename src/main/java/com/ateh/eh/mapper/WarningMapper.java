@@ -35,4 +35,13 @@ public interface WarningMapper extends BaseMapper<Warning> {
      * 时间: 2023/5/15 23:28
      */
     IPage<WarningExt> qryAllWarning(@Param("page") Page<WarningExt> toPage, @Param("req") WarningPageReq req);
+
+    /**
+     * 功能描述: 查询我的举报信息
+     *
+     * @return com.baomidou.mybatisplus.core.metadata.IPage<com.ateh.eh.entity.ext.WarningExt>
+     * @author huang.yijie
+     * 时间: 2023/5/17 16:08
+     */
+    IPage<WarningExt> qryMyWarning(@Param("page") Page<WarningExt> toPage, @Param("req") WarningPageReq req);
 }

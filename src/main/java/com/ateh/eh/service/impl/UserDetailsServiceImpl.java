@@ -34,6 +34,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // 根据用户名查询数据库中的用户信息
         UserExt user = userMapper.qryUserByName(username);
 
+        if (CommonConstants.STATUS_INVALID.equals(user.getStatus())) {
+            throw new RuntimeException("账号违规!");
+        }
         if (Objects.isNull(user)) {
             throw new RuntimeException("该用户不存在！");
         }

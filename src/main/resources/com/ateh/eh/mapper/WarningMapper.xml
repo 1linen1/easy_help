@@ -44,4 +44,12 @@
         </choose>
     </select>
 
+    <select id="qryMyWarning" resultType="com.ateh.eh.entity.ext.WarningExt">
+        SELECT <include refid="Base_Colum_W"/>, u.avatar as passiveAvatar, u.nickname as passiveNickname
+        FROM warning w
+            LEFT JOIN user u ON w.passive_user_id = u.user_id
+        WHERE w.positive_user_id = #{req.positiveUserId}
+        ORDER BY w.create_date DESC
+    </select>
+
 </mapper>

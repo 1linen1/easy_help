@@ -9,6 +9,7 @@ import com.ateh.eh.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,6 +66,12 @@ public class WarningController {
     @ApiOperation("处理申诉")
     public Result handleAppeal(@RequestBody HandleAppealReq req) {
         return warningService.handleAppeal(req);
+    }
+
+    @PostMapping("/qryMyWarning")
+    @ApiOperation("查询举报结果")
+    public Result qryMyWarning(@RequestBody WarningPageReq req) {
+        return warningService.qryMyWarning(req);
     }
 
 }
